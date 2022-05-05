@@ -4350,7 +4350,11 @@ public class Check {
                     boolean isTypePattern = pat.hasTag(BINDINGPATTERN);
                     if (wasPattern || wasConstant || wasDefault ||
                         (wasNullPattern && (!isTypePattern || wasNonEmptyFallThrough))) {
-                        log.error(pat.pos(), Errors.FlowsThroughToPattern);
+                        if(pat.hasTag(DECONSTRUCTIONPATTERN)) {
+                            log.error(pat.pos(), Errors.NullAndRecordPattern);
+                        } else {
+                            log.error(pat.pos(), Errors.FlowsThroughToPattern);
+                        }
                     }
                     wasPattern = true;
                     wasTypePattern = isTypePattern;

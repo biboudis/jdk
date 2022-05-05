@@ -254,4 +254,11 @@ public class SwitchErrors {
             case int j: break;
         }
     }
+
+    record Foo(Integer i){}
+    public void nullAndRecordPattern(Foo o) {
+        switch (o) {
+            case null, Foo(Integer i): break;
+        }
+    }
 }
