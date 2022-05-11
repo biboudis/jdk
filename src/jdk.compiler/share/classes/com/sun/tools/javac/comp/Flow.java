@@ -790,6 +790,39 @@ public class Flow {
             return coveredSymbols;
         }
 
+        // Wraps JCPattern with custom hashCode and equals to detect structurally similar patterns
+        // e.g., Foo x1 and Foo x2 are structurally the same (binding names are ignored)
+        class WrappedJCPattern {
+            private final JCPattern tree;
+
+            private int hashCode;
+
+            public WrappedJCPattern(JCPattern tree) {
+                this.tree = tree;
+            }
+
+            @Override
+            public int hashCode() {
+                int hashCode = this.hashCode;
+                if (hashCode == 0) {
+                    this.hashCode = hashCode = TreeHasher.hash(tree, List.of(tree.type.tsym));
+                }
+                return hashCode;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return (o instanceof WrappedJCPattern jcPattern)
+                        && types.isSameType(tree.type, jcPattern.tree.type)
+                        && new TreeDiffer(List.nil(),List.nil()).scan(tree, jcPattern.tree);
+            }
+        }
+
+        // Cache that memoizes recursive calls of coversDeconstructionFromComponent with:
+        // key: instantiatedComponentType, nestedWrappedComponentPatterns
+        // value: if we have coverage for the combination of type and nested patterns set
+        HashMap<com.sun.tools.javac.util.Pair<Type, Set<WrappedJCPattern>>, Boolean> cache = new HashMap<>();
+
         private boolean coversDeconstructionFromComponent(DiagnosticPosition pos,
                                                           Type targetType,
                                                           List<JCRecordPattern> deconstructionPatterns,
@@ -816,53 +849,72 @@ public class Flow {
             //for the first tested component, gather symbols covered by the nested patterns:
             Type instantiatedComponentType = types.memberType(targetType, components.get(component));
             List<JCPattern> nestedComponentPatterns = deconstructionPatterns.map(d -> d.nested.get(component));
-            Set<Symbol> coveredSymbolsForComponent = coveredSymbols(pos, instantiatedComponentType,
-                                                                    nestedComponentPatterns);
 
-            //for each of the symbols covered by the starting component, find all deconstruction patterns
-            //that have the given type, or its supertype, as a type of the starting nested pattern:
-            Map<Symbol, List<JCRecordPattern>> coveredSymbol2Patterns = new HashMap<>();
+            // a set of distinct patterns is reduced by ignoring the identifier names
+            // e.g., checking against a list of Foo x1, Foo x2, Bar x3 is effectively the same as checking against for
+            //       Foo x1, Bar x3
+            Set<WrappedJCPattern> nestedWrappedComponentPatterns =
+                    nestedComponentPatterns.map(n -> new WrappedJCPattern(n)).stream().collect(Collectors.toSet());
 
-            for (JCRecordPattern deconstructionPattern : deconstructionPatterns) {
-                JCPattern nestedPattern = deconstructionPattern.nested.get(component);
-                Symbol componentPatternType;
-                switch (nestedPattern.getTag()) {
-                    case BINDINGPATTERN, PARENTHESIZEDPATTERN -> {
-                        PatternPrimaryType primaryPatternType =
-                                TreeInfo.primaryPatternType(nestedPattern);
-                        componentPatternType = primaryPatternType.type().tsym;
+            // Using the calculated set for caching
+            var key = new Pair<>(instantiatedComponentType, nestedWrappedComponentPatterns);
+            if(cache.containsKey(key)) {
+                return cache.get(key);
+            } else {
+                nestedComponentPatterns = nestedWrappedComponentPatterns.stream().map(n -> n.tree).collect(List.collector());
+
+                Set<Symbol> coveredSymbolsForComponent = coveredSymbols(pos, instantiatedComponentType,
+                        nestedComponentPatterns);
+
+                //for each of the symbols covered by the starting component, find all deconstruction patterns
+                //that have the given type, or its supertype, as a type of the starting nested pattern:
+                Map<Symbol, List<JCRecordPattern>> coveredSymbol2Patterns = new HashMap<>();
+
+                for (JCRecordPattern deconstructionPattern : deconstructionPatterns) {
+                    JCPattern nestedPattern = deconstructionPattern.nested.get(component);
+                    Symbol componentPatternType;
+                    switch (nestedPattern.getTag()) {
+                        case BINDINGPATTERN, PARENTHESIZEDPATTERN -> {
+                            PatternPrimaryType primaryPatternType =
+                                    TreeInfo.primaryPatternType(nestedPattern);
+                            componentPatternType = primaryPatternType.type().tsym;
+                        }
+                        case RECORDPATTERN -> {
+                            componentPatternType = ((JCRecordPattern) nestedPattern).record;
+                        }
+                        default -> {
+                            throw Assert.error("Unexpected tree kind: " + nestedPattern.getTag());
+                        }
                     }
-                    case RECORDPATTERN -> {
-                        componentPatternType = ((JCRecordPattern) nestedPattern).record;
-                    }
-                    default -> {
-                        throw Assert.error("Unexpected tree kind: " + nestedPattern.getTag());
+                    for (Symbol currentType : coveredSymbolsForComponent) {
+                        if (types.isSubtype(types.erasure(currentType.type),
+                                types.erasure(componentPatternType.type))) {
+                            coveredSymbol2Patterns.put(currentType,
+                                    coveredSymbol2Patterns.getOrDefault(currentType,
+                                                    List.nil())
+                                            .prepend(deconstructionPattern));
+                        }
                     }
                 }
-                for (Symbol currentType : coveredSymbolsForComponent) {
-                    if (types.isSubtype(types.erasure(currentType.type),
-                                        types.erasure(componentPatternType.type))) {
-                        coveredSymbol2Patterns.put(currentType,
-                                                   coveredSymbol2Patterns.getOrDefault(currentType,
-                                                                                       List.nil())
-                                              .prepend(deconstructionPattern));
+
+                //Check the components following the starting component, for each of the covered symbol,
+                //if they are exhaustive. If yes, the given covered symbol should be part of the following
+                //exhaustiveness check:
+                Set<Symbol> covered = new HashSet<>();
+
+                for (Entry<Symbol, List<JCRecordPattern>> e : coveredSymbol2Patterns.entrySet()) {
+                    if (coversDeconstructionFromComponent(pos, targetType, e.getValue(), component + 1)) {
+                        covered.add(e.getKey());
                     }
                 }
+
+                //verify whether the filtered symbols cover the given record's declared type:
+                var ret = isExhaustive(pos, instantiatedComponentType, covered);
+
+                cache.put(key, ret);
+
+                return ret;
             }
-
-            //Check the components following the starting component, for each of the covered symbol,
-            //if they are exhaustive. If yes, the given covered symbol should be part of the following
-            //exhaustiveness check:
-            Set<Symbol> covered = new HashSet<>();
-
-            for (Entry<Symbol, List<JCRecordPattern>> e : coveredSymbol2Patterns.entrySet()) {
-                if (coversDeconstructionFromComponent(pos, targetType, e.getValue(), component + 1)) {
-                    covered.add(e.getKey());
-                }
-            }
-
-            //verify whether the filtered symbols cover the given record's declared type:
-            return isExhaustive(pos, instantiatedComponentType, covered);
         }
 
         private void transitiveCovers(DiagnosticPosition pos, Type seltype, Set<Symbol> covered) {

@@ -259,6 +259,14 @@ public class TreeDiffer extends TreeScanner {
     @Override
     public void visitBindingPattern(JCBindingPattern tree) {
         JCBindingPattern that = (JCBindingPattern) parameter;
+
+        if (this != null && tree != null) {
+            if (Objects.equals(that.type, tree.type)) {
+                result = true;
+                return;
+            }
+        }
+
         result = scan(tree.var, that.var);
         if (!result) {
             return;
