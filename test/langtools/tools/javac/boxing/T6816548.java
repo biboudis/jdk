@@ -53,7 +53,6 @@ public class T6816548 {
     public static void testByte() {
         final byte fb = 0;
         Byte b = fb;
-        Short s = fb;
         Character c = fb;
     }
 

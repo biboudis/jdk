@@ -2368,11 +2368,13 @@ public class Types {
                     return true;
                 break;
             case CLASS:
-                switch (unboxedType(s).getTag()) {
-                case BYTE:
-                case CHAR:
-                case SHORT:
-                    return isAssignable(t, unboxedType(s), warn);
+                Type unboxedType = unboxedType(s);
+                switch (unboxedType.getTag()) {
+                    case BYTE:
+                    case CHAR:
+                    case SHORT:
+                        return !t.getTag().isStrictSubRangeOf(unboxedType(s).getTag()) &&
+                               isAssignable(t, unboxedType(s), warn);
                 }
                 break;
             }

@@ -1,0 +1,5 @@
+T8328178.java:9:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: byte, java.lang.Integer)
+T8328178.java:10:19: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: byte, java.lang.Short)
+T8328178.java:21:18: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: byte, java.lang.Integer)
+T8328178.java:27:18: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: byte, java.lang.Short)
+4 errors

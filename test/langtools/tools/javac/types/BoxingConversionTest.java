@@ -146,6 +146,7 @@ public class BoxingConversionTest extends TypeHarness {
     Result[][] results2 = {
                 //Byte, Short, Integer, Long, Float, Double, Chararacter, Boolean
     /*byte*/    { T   , F    , F      , F   , F    , F     , F          , F },
+    /*byte1*/   { T   , F    , F      , F   , F    , F     , A          , F },
     /*short*/   { F   , T    , F      , F   , F    , F     , F          , F },
     /*short1*/  { A   , T    , F      , F   , F    , F     , A          , F },
     /*short2*/  { F   , T    , F      , F   , F    , F     , A          , F },
@@ -192,6 +193,7 @@ public class BoxingConversionTest extends TypeHarness {
 
         types2 = new Type[] {
             predef.byteType,
+            fac.Constant((byte)0x0001),
             predef.shortType,
             fac.Constant((short)0x0001),
             fac.Constant((short)0x0100),
