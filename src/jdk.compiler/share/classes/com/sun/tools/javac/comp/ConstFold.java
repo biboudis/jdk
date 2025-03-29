@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@ package com.sun.tools.javac.comp;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.jvm.*;
 import com.sun.tools.javac.util.*;
+
+import java.lang.runtime.ExactConversionsSupport;
 
 import static com.sun.tools.javac.code.TypeTag.BOOLEAN;
 
@@ -336,4 +338,70 @@ strictfp class ConstFold {
          }
          return ttype;
      }
+
+    /** Determine if the given coercion between numeric types loses information.
+     *  @param srcType  The type being assigned from
+     *  @param dstType  The type being assigned to
+     *  @param value    The value being assigned
+     */
+    boolean isExact(Type srcType, Type dstType, Number value) {
+        Assert.check(srcType.getTag().isNumeric() && dstType.getTag().isNumeric());
+        switch (srcType.getTag()) {
+        case BYTE:
+            switch (dstType.getTag()) {
+            case CHAR:      return ExactConversionsSupport.isIntToCharExact(value.intValue());
+            }
+            break;
+        case CHAR:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isIntToByteExact(value.intValue());
+            case SHORT:     return ExactConversionsSupport.isIntToShortExact(value.intValue());
+            }
+            break;
+        case SHORT:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isIntToByteExact(value.intValue());
+            case CHAR:      return ExactConversionsSupport.isIntToCharExact(value.intValue());
+            }
+            break;
+        case INT:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isIntToByteExact(value.intValue());
+            case CHAR:      return ExactConversionsSupport.isIntToCharExact(value.intValue());
+            case SHORT:     return ExactConversionsSupport.isIntToShortExact(value.intValue());
+            case FLOAT:     return ExactConversionsSupport.isIntToFloatExact(value.intValue());
+            }
+            break;
+        case FLOAT:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isFloatToByteExact(value.floatValue());
+            case CHAR:      return ExactConversionsSupport.isFloatToCharExact(value.floatValue());
+            case SHORT:     return ExactConversionsSupport.isFloatToShortExact(value.floatValue());
+            case INT:       return ExactConversionsSupport.isFloatToIntExact(value.floatValue());
+            case LONG:      return ExactConversionsSupport.isFloatToLongExact(value.floatValue());
+            }
+            break;
+        case LONG:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isLongToByteExact(value.longValue());
+            case CHAR:      return ExactConversionsSupport.isLongToCharExact(value.longValue());
+            case SHORT:     return ExactConversionsSupport.isLongToShortExact(value.longValue());
+            case INT:       return ExactConversionsSupport.isLongToIntExact(value.longValue());
+            case FLOAT:     return ExactConversionsSupport.isLongToFloatExact(value.longValue());
+            case DOUBLE:    return ExactConversionsSupport.isLongToDoubleExact(value.longValue());
+            }
+            break;
+        case DOUBLE:
+            switch (dstType.getTag()) {
+            case BYTE:      return ExactConversionsSupport.isDoubleToByteExact(value.doubleValue());
+            case CHAR:      return ExactConversionsSupport.isDoubleToCharExact(value.doubleValue());
+            case SHORT:     return ExactConversionsSupport.isDoubleToShortExact(value.doubleValue());
+            case INT:       return ExactConversionsSupport.isDoubleToIntExact(value.doubleValue());
+            case FLOAT:     return ExactConversionsSupport.isDoubleToFloatExact(value.doubleValue());
+            case LONG:      return ExactConversionsSupport.isDoubleToLongExact(value.doubleValue());
+            }
+            break;
+        }
+        return true;
+    }
 }

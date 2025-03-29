@@ -3,7 +3,7 @@
  * @bug 8244681
  * @summary Test for -Xlint:lossy-conversions
  *
- * @compile/fail/ref=LossyConversions.out -XDrawDiagnostics -Xmaxwarns 200 -Xlint:lossy-conversions -Werror LossyConversions.java
+ * @compile/fail/ref=LossyConversions.out -XDrawDiagnostics -Xmaxwarns 300 -Xlint:lossy-conversions -Werror LossyConversions.java
  */
 
 public class LossyConversions {
@@ -113,15 +113,15 @@ public class LossyConversions {
 
         e += a; e -= a; e *= a; e /= a; //no warnings
         e += b; e -= b; e *= b; e /= b; //no warnings
-        e += c; e -= c; e *= c; e /= c; //no warnings
-        e += d; e -= d; e *= d; e /= d; //no warnings
+        e += c; e -= c; e *= c; e /= c;
+        e += d; e -= d; e *= d; e /= d;
         e += e; e -= e; e *= e; e /= e; //no warnings
         e += f; e -= f; e *= f; e /= f;
 
         f += a; f -= a; f *= a; f /= a; //no warnings
         f += b; f -= b; f *= b; f /= b; //no warnings
         f += c; f -= c; f *= c; f /= c; //no warnings
-        f += d; f -= d; f *= d; f /= d; //no warnings
+        f += d; f -= d; f *= d; f /= d;
         f += e; f -= e; f *= e; f /= e; //no warnings
         f += f; f -= f; f *= f; f /= f; //no warnings
     }
@@ -188,5 +188,56 @@ public class LossyConversions {
         d += f; d -= f; d *= f; d /= f;
 
         e += f; e -= f; e *= f; e /= f;
+    }
+
+    public static final int INT2FLOAT_SAFE   = 0x10000000;
+    public static final int INT2FLOAT_UNSAFE = 0x10000001;
+
+    public static final long LONG2FLOAT_SAFE   = 0x10000000L;
+    public static final long LONG2FLOAT_UNSAFE = 0x10000001L;
+
+    public static final long LONG2DOUBLE_SAFE   = 0x1000000000000000L;
+    public static final long LONG2DOUBLE_UNSAFE = 0x1000000000000001L;
+
+    public void lossyAssignments() {
+
+        float f;
+        double d;
+
+        f = INT2FLOAT_SAFE;             // no warning
+        f = INT2FLOAT_UNSAFE;
+        f = Integer.MIN_VALUE;          // no warning
+        f = Integer.MAX_VALUE;
+
+        f = LONG2FLOAT_SAFE;            // no warning
+        f = LONG2FLOAT_UNSAFE;
+        f = Long.MIN_VALUE;             // no warning
+        f = Long.MAX_VALUE;
+
+        d = LONG2DOUBLE_SAFE;           // no warning
+        d = LONG2DOUBLE_UNSAFE;
+        d = Long.MIN_VALUE;             // no warning
+        d = Long.MAX_VALUE;
+
+        floatMethod(INT2FLOAT_SAFE);    // no warning
+        floatMethod(INT2FLOAT_UNSAFE);
+        floatMethod(Integer.MIN_VALUE); // no warning
+        floatMethod(Integer.MAX_VALUE);
+
+        floatMethod(LONG2FLOAT_SAFE);   // no warning
+        floatMethod(LONG2FLOAT_UNSAFE);
+        floatMethod(Long.MIN_VALUE);    // no warning
+        floatMethod(Long.MAX_VALUE);
+
+        doubleMethod(LONG2DOUBLE_SAFE); // no warning
+        doubleMethod(LONG2DOUBLE_UNSAFE);
+        doubleMethod(Long.MIN_VALUE);   // no warning
+        doubleMethod(Long.MAX_VALUE);
+    }
+
+    public void floatMethod(float x) {
+    }
+
+    public void doubleMethod(double x) {
     }
 }

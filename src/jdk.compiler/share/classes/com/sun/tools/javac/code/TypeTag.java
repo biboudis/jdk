@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -54,14 +54,14 @@ public enum TypeTag {
 
     /** The tag of the basic type `long'.
      */
-    LONG(LONG_CLASS, LONG_SUPERCLASSES, true),
+    LONG(LONG_CLASS, LONG_SUPERCLASSES, LONG_LOSSY_SUPERCLASSES, true),
 
     /** The tag of the basic type `float'.
      */
     FLOAT(FLOAT_CLASS, FLOAT_SUPERCLASSES, true),
     /** The tag of the basic type `int'.
      */
-    INT(INT_CLASS, INT_SUPERCLASSES, true),
+    INT(INT_CLASS, INT_SUPERCLASSES, INT_LOSSY_SUPERCLASSES, true),
     /** The tag of the basic type `double'.
      */
     DOUBLE(DOUBLE_CLASS, DOUBLE_CLASS, true),
@@ -133,6 +133,7 @@ public enum TypeTag {
 
     final int superClasses;
     final int numericClass;
+    final int lossySuperClasses;
     final boolean isPrimitive;
 
     private TypeTag() {
@@ -140,8 +141,13 @@ public enum TypeTag {
     }
 
     private TypeTag(int numericClass, int superClasses, boolean isPrimitive) {
-        this.superClasses = superClasses;
+        this(numericClass, superClasses, 0, isPrimitive);
+    }
+
+    private TypeTag(int numericClass, int superClasses, int lossySuperClasses, boolean isPrimitive) {
         this.numericClass = numericClass;
+        this.superClasses = superClasses;
+        this.lossySuperClasses = lossySuperClasses;
         this.isPrimitive = isPrimitive;
     }
 
@@ -164,8 +170,10 @@ public enum TypeTag {
                 LONG_CLASS | FLOAT_CLASS | DOUBLE_CLASS;
 
         static final int INT_SUPERCLASSES = INT_CLASS | LONG_CLASS | FLOAT_CLASS | DOUBLE_CLASS;
+        static final int INT_LOSSY_SUPERCLASSES = FLOAT_CLASS;
 
         static final int LONG_SUPERCLASSES = LONG_CLASS | FLOAT_CLASS | DOUBLE_CLASS;
+        static final int LONG_LOSSY_SUPERCLASSES = FLOAT_CLASS | DOUBLE_CLASS;
 
         static final int FLOAT_SUPERCLASSES = FLOAT_CLASS | DOUBLE_CLASS;
     }
@@ -178,12 +186,20 @@ public enum TypeTag {
         return (this.superClasses & tag.numericClass) != 0 && this != tag;
     }
 
+    public boolean isNumeric() {
+        return this.numericClass != 0;
+    }
+
     public boolean isSubRangeOf(TypeTag tag) {
         return (this.superClasses & tag.numericClass) != 0;
     }
 
     public boolean isInSuperClassesOf(TypeTag tag) {
         return (this.numericClass & tag.superClasses) != 0;
+    }
+
+    public boolean isInLossySuperclassesOf(TypeTag tag) {
+        return (this.numericClass & tag.lossySuperClasses) != 0;
     }
 
     /** Returns the number of type tags.

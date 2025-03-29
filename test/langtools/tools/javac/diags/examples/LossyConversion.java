@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,10 +22,16 @@
  */
 
 // key: compiler.warn.possible.loss.of.precision
+// key: compiler.warn.possible.loss.of.precision.assignment
+// key: compiler.warn.possible.loss.of.precision.parameter
 // options: -Xlint:lossy-conversions
 
 class LossyConversion {
     void m(int a) {
-        a += 1.0;
+        a += 1.0;               // compound
+        float b = 0x10000001;   // assignment
+        m2(0x10000001);         // parameter
+    }
+    void m2(float f) {
     }
 }
