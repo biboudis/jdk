@@ -1352,9 +1352,14 @@ public class Flow {
             Type seltype = types.erasure(componentType);
             Type pattype = types.erasure(bp.type);
 
-            return seltype.isPrimitive() ?
-                    types.isUnconditionallyExact(seltype, pattype) :
-                    (bp.type.isPrimitive() && types.isUnconditionallyExact(types.unboxedType(seltype), bp.type)) || types.isSubtype(seltype, pattype);
+            if (seltype.constValue() instanceof Number n) {
+                return types.isUnconditionallyExactConstantPrimitives(seltype, pattype, n);
+            } else {
+                return seltype.isPrimitive() ?
+                        types.isUnconditionallyExact(seltype, pattype) :
+                        (bp.type.isPrimitive() && types.isUnconditionallyExact(types.unboxedType(seltype), bp.type)) || types.isSubtype(seltype, pattype);
+            }
+
         }
         return false;
     }

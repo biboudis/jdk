@@ -103,7 +103,6 @@ public class Check {
     private final Resolve rs;
     private final Symtab syms;
     private final Enter enter;
-    private final ConstFold cfolder;
     private final DeferredAttr deferredAttr;
     private final Infer infer;
     private final Types types;
@@ -143,7 +142,6 @@ public class Check {
         rs = Resolve.instance(context);
         syms = Symtab.instance(context);
         enter = Enter.instance(context);
-        cfolder = ConstFold.instance(context);;
         deferredAttr = DeferredAttr.instance(context);
         infer = Infer.instance(context);
         types = Types.instance(context);
@@ -4138,8 +4136,7 @@ public class Check {
         while (!formal.isEmpty() && !actual.isEmpty()) {
             Type actualType = actual.head.type;
             Type formalType = formal.head;
-            checkLossOfPrecision(actual.head.pos(), actualType, formalType,
-                actualType.constValue(), LintWarnings::PossibleLossOfPrecisionParameter);
+            checkLossOfPrecision(actual.head.pos(), actualType, formalType, LossCheck.PARAM, actualType.constValue());
             formal = formal.tail;
             actual = actual.tail;
         }
@@ -4153,14 +4150,55 @@ public class Check {
      *  @param constValue   The value being assigned if known, else null
      *  @param builder      Warning builder
      */
-    void checkLossOfPrecision(DiagnosticPosition pos, Type srcType, Type dstType,
-            Object constValue, BiFunction<Type, Type, LintWarning> builder) {
-        if (srcType.isNumeric() && dstType.isNumeric() &&
-            (!types.isAssignable(srcType, dstType) ||
-              (dstType.getTag().isInLossySuperclassesOf(srcType.getTag()) &&
-                (constValue == null || !cfolder.isExact(srcType, dstType, (Number)constValue))))) {
-            deferredLintHandler.report(_ -> lint.logIfEnabled(pos, builder.apply(srcType, dstType)));
+    void checkLossOfPrecision(DiagnosticPosition pos, Type srcType, Type dstType, LossCheck kind, Object constValue) {
+        checkLossOfPrecision(pos, srcType, srcType, dstType, kind, constValue);
+    }
+    void checkLossOfPrecision(DiagnosticPosition pos, Type initialType, Type srcType, Type dstType, LossCheck kind, Object constValue) {
+        // 1) among primitives that are not assignable (compound statements)
+        // 2) inexact widening primitive conversion
+        //      2a) with normal expressions
+        //      2b) with constant expression
+        // 3) unboxing conversion followed by inexact widening primitive conversion
+        // 4) widening reference conversion followed by unboxing conversion followed by inexact widening primitive conversion
+        if (srcType.isNumeric() && dstType.isNumeric() && !types.isAssignable(srcType, dstType)) {                            // todo: for non assignable?
+            deferredLintHandler.report(_ ->
+                    lint.logIfEnabled(pos, LintWarnings.PossibleLossOfPrecision(srcType, dstType)));
+        } else if (srcType.isNumeric() && dstType.isNumeric() && dstType.getTag().isInLossySuperclassesOf(srcType.getTag())){ // todo: should I guard this under preview?
+            if ((constValue instanceof Number n && !types.isUnconditionallyExactConstantPrimitives(srcType, dstType, n))) {
+                LintWarning warning = switch (kind) {
+                    case PARAM -> LintWarnings.DefiniteLossOfPrecisionParameter(initialType, dstType, n.toString());
+                    case ASSIGN -> LintWarnings.DefiniteLossOfPrecisionAssignment(initialType, dstType, n.toString());
+                    case ASSIGNOP -> LintWarnings.DefiniteLossOfPrecision(initialType, dstType, n.toString());
+                };
+                deferredLintHandler.report(_ -> lint.logIfEnabled(pos, warning));
+            }
+            else if (constValue == null){
+                LintWarning warning = switch (kind) {
+                    case PARAM -> LintWarnings.PossibleLossOfPrecisionParameter(initialType, dstType);
+                    case ASSIGN -> LintWarnings.PossibleLossOfPrecisionAssignment(initialType, dstType);
+                    case ASSIGNOP -> LintWarnings.PossibleLossOfPrecision(initialType, dstType);
+                };
+                deferredLintHandler.report(_ -> lint.logIfEnabled(pos, warning));
+            }
+        } else if (srcType.isNumeric() && types.unboxedType(srcType).isNumeric() && dstType.isNumeric()) {
+            checkLossOfPrecision(pos, initialType,
+                    types.unboxedType(srcType),
+                    dstType,
+                    kind,
+                    null);
+        } else if (srcType.isReference() && types.unboxedType(types.erasure(srcType)).isNumeric() && dstType.isNumeric()) {
+            checkLossOfPrecision(pos, initialType,
+                    types.unboxedType(types.erasure(srcType)),
+                    dstType,
+                    kind,
+                    null);
+
         }
+    }
+    enum LossCheck {
+        PARAM,
+        ASSIGN,
+        ASSIGNOP
     }
 
     /**

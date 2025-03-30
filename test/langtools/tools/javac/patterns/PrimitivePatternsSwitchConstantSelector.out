@@ -1,0 +1,5 @@
+PrimitivePatternsSwitchConstantSelector.java:19:9: compiler.err.not.exhaustive.statement
+PrimitivePatternsSwitchConstantSelector.java:28:9: compiler.err.not.exhaustive.statement
+- compiler.note.preview.filename: PrimitivePatternsSwitchConstantSelector.java, DEFAULT
+- compiler.note.preview.recompile
+2 errors

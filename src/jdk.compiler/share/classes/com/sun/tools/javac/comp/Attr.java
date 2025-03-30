@@ -1321,8 +1321,7 @@ public class Attr extends JCTree.Visitor {
                 if (tree.isImplicitlyTyped()) {
                     setSyntheticVariableType(tree, v.type);
                 }
-                chk.checkLossOfPrecision(tree.init.pos(), tree.init.type, v.type, tree.init.type.constValue(),
-                  LintWarnings::PossibleLossOfPrecisionAssignment);
+                chk.checkLossOfPrecision(tree.init.pos(), tree.init.type, v.type, Check.LossCheck.ASSIGN, tree.init.type.constValue());
             }
             result = tree.type = v.type;
             if (env.enclClass.sym.isRecord() && tree.sym.owner.kind == TYP && !v.isStatic()) {
@@ -3979,8 +3978,8 @@ public class Attr extends JCTree.Visitor {
         Type capturedType = capture(owntype);
         Type vartype = attribExpr(tree.rhs, env, owntype);
         if (!owntype.isErroneous() && !capturedType.isErroneous()) {
-            chk.checkLossOfPrecision(tree.rhs.pos(), vartype, capturedType,
-                vartype.constValue(), LintWarnings::PossibleLossOfPrecisionAssignment);
+            chk.checkLossOfPrecision(tree.rhs.pos(), vartype, capturedType, Check.LossCheck.ASSIGN,
+                vartype.constValue());
         }
         result = check(tree, capturedType, KindSelector.VAL, resultInfo);
     }
@@ -3998,7 +3997,7 @@ public class Attr extends JCTree.Visitor {
             chk.checkCastable(tree.rhs.pos(),
                               operator.type.getReturnType(),
                               owntype);
-            chk.checkLossOfPrecision(tree.rhs.pos(), operand, owntype, null, LintWarnings::PossibleLossOfPrecision);
+            chk.checkLossOfPrecision(tree.rhs.pos(), operand, owntype, Check.LossCheck.ASSIGNOP, operand.constValue());
         }
         result = check(tree, owntype, KindSelector.VAL, resultInfo);
     }

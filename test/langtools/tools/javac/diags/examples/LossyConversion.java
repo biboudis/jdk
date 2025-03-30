@@ -24,14 +24,24 @@
 // key: compiler.warn.possible.loss.of.precision
 // key: compiler.warn.possible.loss.of.precision.assignment
 // key: compiler.warn.possible.loss.of.precision.parameter
+// key: compiler.warn.definite.loss.of.precision
+// key: compiler.warn.definite.loss.of.precision.assignment
+// key: compiler.warn.definite.loss.of.precision.parameter
 // options: -Xlint:lossy-conversions
 
 class LossyConversion {
-    void m(int a) {
-        a += 1.0;               // compound
-        float b = 0x10000001;   // assignment
-        m2(0x10000001);         // parameter
+    void definite(float f) {
+        f += 16_777_217;            // compound
+        float b = 16_777_217;       // assignment
+        m3(16_777_217);          // parameter
     }
-    void m2(float f) {
+    void possible(int i) {
+        float f = 1.0f;
+        int i2 = 0x10000001;
+        i += f;                      // compound
+        float b = i2;                // assignment
+        m3(i2);                      // parameter
+    }
+    void m3(float f) {
     }
 }

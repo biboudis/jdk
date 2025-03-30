@@ -1,0 +1,36 @@
+LossyConversions2.java:22:13: compiler.warn.definite.loss.of.precision.assignment: int, float, 268435457
+LossyConversions2.java:24:20: compiler.warn.definite.loss.of.precision.assignment: int, float, 2147483647
+LossyConversions2.java:27:13: compiler.warn.definite.loss.of.precision.assignment: long, float, 268435457
+LossyConversions2.java:29:17: compiler.warn.definite.loss.of.precision.assignment: long, float, 9223372036854775807
+LossyConversions2.java:32:13: compiler.warn.definite.loss.of.precision.assignment: long, double, 1152921504606846977
+LossyConversions2.java:34:17: compiler.warn.definite.loss.of.precision.assignment: long, double, 9223372036854775807
+LossyConversions2.java:37:21: compiler.warn.definite.loss.of.precision.parameter: int, float, 268435457
+LossyConversions2.java:39:28: compiler.warn.definite.loss.of.precision.parameter: int, float, 2147483647
+LossyConversions2.java:42:21: compiler.warn.definite.loss.of.precision.parameter: long, float, 268435457
+LossyConversions2.java:44:25: compiler.warn.definite.loss.of.precision.parameter: long, float, 9223372036854775807
+LossyConversions2.java:47:22: compiler.warn.definite.loss.of.precision.parameter: long, double, 1152921504606846977
+LossyConversions2.java:49:26: compiler.warn.definite.loss.of.precision.parameter: long, double, 9223372036854775807
+LossyConversions2.java:63:13: compiler.warn.possible.loss.of.precision.assignment: int, float
+LossyConversions2.java:64:13: compiler.warn.possible.loss.of.precision.assignment: int, float
+LossyConversions2.java:66:13: compiler.warn.possible.loss.of.precision.assignment: long, float
+LossyConversions2.java:67:13: compiler.warn.possible.loss.of.precision.assignment: long, float
+LossyConversions2.java:69:13: compiler.warn.possible.loss.of.precision.assignment: long, double
+LossyConversions2.java:70:13: compiler.warn.possible.loss.of.precision.assignment: long, double
+LossyConversions2.java:72:21: compiler.warn.possible.loss.of.precision.parameter: int, float
+LossyConversions2.java:74:21: compiler.warn.possible.loss.of.precision.parameter: long, float
+LossyConversions2.java:76:22: compiler.warn.possible.loss.of.precision.parameter: long, double
+LossyConversions2.java:90:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Integer, float
+LossyConversions2.java:91:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Integer, float
+LossyConversions2.java:93:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Long, float
+LossyConversions2.java:94:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Long, float
+LossyConversions2.java:96:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Long, double
+LossyConversions2.java:97:13: compiler.warn.possible.loss.of.precision.assignment: java.lang.Long, double
+LossyConversions2.java:99:21: compiler.warn.possible.loss.of.precision.parameter: java.lang.Integer, float
+LossyConversions2.java:101:21: compiler.warn.possible.loss.of.precision.parameter: java.lang.Long, float
+LossyConversions2.java:103:22: compiler.warn.possible.loss.of.precision.parameter: java.lang.Long, double
+LossyConversions2.java:107:19: compiler.warn.possible.loss.of.precision.assignment: T, float
+LossyConversions2.java:110:19: compiler.warn.possible.loss.of.precision.assignment: T, float
+LossyConversions2.java:111:20: compiler.warn.possible.loss.of.precision.assignment: T, double
+- compiler.err.warnings.and.werror
+1 error
+33 warnings

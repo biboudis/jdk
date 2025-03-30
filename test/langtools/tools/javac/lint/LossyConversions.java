@@ -63,6 +63,7 @@ public class LossyConversions {
 
         float e = 0;
         e += 1.0; e -= 2.0; e *= 3.0; e /= 4.0;
+        e += 16_777_217;
 
         double f = 1.0;
         f += 1.0; f -= 2.0; f *= 3.0; f /= 4.0; //no warnings
@@ -188,56 +189,5 @@ public class LossyConversions {
         d += f; d -= f; d *= f; d /= f;
 
         e += f; e -= f; e *= f; e /= f;
-    }
-
-    public static final int INT2FLOAT_SAFE   = 0x10000000;
-    public static final int INT2FLOAT_UNSAFE = 0x10000001;
-
-    public static final long LONG2FLOAT_SAFE   = 0x10000000L;
-    public static final long LONG2FLOAT_UNSAFE = 0x10000001L;
-
-    public static final long LONG2DOUBLE_SAFE   = 0x1000000000000000L;
-    public static final long LONG2DOUBLE_UNSAFE = 0x1000000000000001L;
-
-    public void lossyAssignments() {
-
-        float f;
-        double d;
-
-        f = INT2FLOAT_SAFE;             // no warning
-        f = INT2FLOAT_UNSAFE;
-        f = Integer.MIN_VALUE;          // no warning
-        f = Integer.MAX_VALUE;
-
-        f = LONG2FLOAT_SAFE;            // no warning
-        f = LONG2FLOAT_UNSAFE;
-        f = Long.MIN_VALUE;             // no warning
-        f = Long.MAX_VALUE;
-
-        d = LONG2DOUBLE_SAFE;           // no warning
-        d = LONG2DOUBLE_UNSAFE;
-        d = Long.MIN_VALUE;             // no warning
-        d = Long.MAX_VALUE;
-
-        floatMethod(INT2FLOAT_SAFE);    // no warning
-        floatMethod(INT2FLOAT_UNSAFE);
-        floatMethod(Integer.MIN_VALUE); // no warning
-        floatMethod(Integer.MAX_VALUE);
-
-        floatMethod(LONG2FLOAT_SAFE);   // no warning
-        floatMethod(LONG2FLOAT_UNSAFE);
-        floatMethod(Long.MIN_VALUE);    // no warning
-        floatMethod(Long.MAX_VALUE);
-
-        doubleMethod(LONG2DOUBLE_SAFE); // no warning
-        doubleMethod(LONG2DOUBLE_UNSAFE);
-        doubleMethod(Long.MIN_VALUE);   // no warning
-        doubleMethod(Long.MAX_VALUE);
-    }
-
-    public void floatMethod(float x) {
-    }
-
-    public void doubleMethod(double x) {
     }
 }
