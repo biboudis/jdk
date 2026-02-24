@@ -25,6 +25,7 @@
 
 package com.sun.tools.javac.tree;
 
+import com.sun.source.tree.MatchStatementTree;
 import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.tree.JCTree.*;
 import jdk.internal.javac.PreviewFeature;
@@ -168,7 +169,7 @@ public class TreeScanner extends Visitor {
     }
 
     public void visitForeachLoop(JCEnhancedForLoop tree) {
-        scan(tree.var);
+        scan(tree.varOrRecordPattern);
         scan(tree.expr);
         scan(tree.body);
     }
@@ -247,6 +248,11 @@ public class TreeScanner extends Visitor {
     public void visitAssert(JCAssert tree) {
         scan(tree.cond);
         scan(tree.detail);
+    }
+
+    public void visitMatch(JCMatch tree) {
+        scan(tree.pattern);
+        scan(tree.expr);
     }
 
     public void visitApply(JCMethodInvocation tree) {

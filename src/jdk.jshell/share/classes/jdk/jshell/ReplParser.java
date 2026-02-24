@@ -187,6 +187,11 @@ class ReplParser extends JavacParser {
                     return List.<JCTree>of(classOrRecordOrInterfaceOrEnumDeclaration(mods, dc));
                 } else {
                     int pos = token.pos;
+
+                    if (analyzePatternAssignment() == LocalVariableDeclOrRecordPattern.RecordPattern) {
+                        return List.<JCTree>of(parseStatement());
+                    }
+
                     List<JCTypeParameter> typarams = typeParametersOpt();
                     // if there are type parameters but no modifiers, save the start
                     // position of the method in the modifiers.

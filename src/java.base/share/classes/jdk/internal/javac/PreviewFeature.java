@@ -72,6 +72,8 @@ public @interface PreviewFeature {
             status="Second Preview")
         PEM_API,
         LANGUAGE_MODEL,
+        @JEP(number=999, title="Match Statements", status="First Preview")
+        MATCH_STATEMENTS(),
         /**
          * A key for testing.
          */

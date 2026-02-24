@@ -2408,8 +2408,25 @@ public class Types {
                 break;
             }
         }
-        return isConvertible(t, s, warn);
+        if (isNR1S(t, s)) {
+            return true;
+        }
+        else {
+            return isConvertible(t, s, warn);
+        }
     }
+    // where
+        public boolean isNR1S(Type t, Type s) {
+            if (t.tsym instanceof ClassSymbol tsm
+                    && tsm.isSealed()
+                    && tsm.getPermittedSubclasses().size() == 1
+                    && s.tsym instanceof ClassSymbol ssm
+                    && ssm.isFinal()
+                    && isSameType(erasure(tsm.getPermittedSubclasses().head), erasure(s))) {
+                return true;
+            }
+            return false;
+        }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="erasure">

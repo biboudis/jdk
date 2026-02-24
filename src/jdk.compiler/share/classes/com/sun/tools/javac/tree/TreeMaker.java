@@ -284,8 +284,14 @@ public class TreeMaker implements JCTree.Factory {
         return tree;
     }
 
-    public JCEnhancedForLoop ForeachLoop(JCVariableDecl var, JCExpression expr, JCStatement body) {
-        JCEnhancedForLoop tree = new JCEnhancedForLoop(var, expr, body);
+    public JCEnhancedForLoop ForeachLoop(JCTree varOrRecordPattern, JCExpression expr, JCStatement body) {
+        JCEnhancedForLoop tree = new JCEnhancedForLoop(varOrRecordPattern, expr, body);
+        tree.pos = pos;
+        return tree;
+    }
+
+    public JCMatch Match(JCPattern pattern, JCExpression expr) {
+        JCMatch tree = new JCMatch(pattern, expr);
         tree.pos = pos;
         return tree;
     }

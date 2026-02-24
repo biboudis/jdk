@@ -79,6 +79,11 @@ public interface Tree {
         ASSERT(AssertTree.class),
 
         /**
+         * Used for instances of {@link MatchStatementTree}.
+         */
+        MATCH_STATEMENT(MatchStatementTree.class),
+
+        /**
          * Used for instances of {@link AssignmentTree}.
          */
         ASSIGNMENT(AssignmentTree.class),
