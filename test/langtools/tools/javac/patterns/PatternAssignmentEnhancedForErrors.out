@@ -1,8 +1,0 @@
-PatternAssignmentEnhancedForErrors.java:35:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, PatternAssignmentEnhancedForErrors.Interface)
-PatternAssignmentEnhancedForErrors.java:12:9: compiler.err.foreach.not.exhaustive.on.type: PatternAssignmentEnhancedForErrors.Point, java.lang.Object
-PatternAssignmentEnhancedForErrors.java:18:9: compiler.err.foreach.not.exhaustive.on.type: PatternAssignmentEnhancedForErrors.Point, java.lang.Object
-PatternAssignmentEnhancedForErrors.java:24:9: compiler.err.foreach.not.exhaustive.on.type: PatternAssignmentEnhancedForErrors.OPoint, PatternAssignmentEnhancedForErrors.OPoint
-PatternAssignmentEnhancedForErrors.java:30:9: compiler.err.foreach.not.exhaustive.on.type: PatternAssignmentEnhancedForErrors.Rec, compiler.misc.type.captureof: 1, ?
-- compiler.note.preview.filename: PatternAssignmentEnhancedForErrors.java, DEFAULT
-- compiler.note.preview.recompile
-5 errors

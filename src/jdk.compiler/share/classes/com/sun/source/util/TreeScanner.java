@@ -348,7 +348,7 @@ public class TreeScanner<R,P> implements TreeVisitor<R,P> {
      * @return the result of scanning
      */
     @Override
-    public R visitMatchStatement(MatchStatementTree node, P p) {
+    public R visitEnhancedVariableDecl(EnhancedVariableDeclTree node, P p) {
         R r = scan(node.getPattern(), p);
         r = scanAndReduce(node.getExpression(), p, r);
         return r;

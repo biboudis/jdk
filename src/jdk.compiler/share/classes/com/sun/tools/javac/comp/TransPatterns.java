@@ -1159,12 +1159,12 @@ public class TransPatterns extends TreeTranslator {
     }
 
     @Override
-    public void visitMatch(JCTree.JCMatch tree) {
+    public void visitEnhancedVariableDecl(JCTree.JCEnhancedVariableDecl tree) {
         /**
          * A statement of the form
          *
          * <pre>
-         *     match <pattern> = <expression> ;
+         *     <pattern> = <expression> ;
          * </pre>
          *
          * (where <pattern> is a record pattern) is translated to:
@@ -1194,7 +1194,7 @@ public class TransPatterns extends TreeTranslator {
                     make.Throw(makeNewClass(syms.nullPointerExceptionType, List.of(makeNull()))),
                     null);
 
-            // match statement logic
+            // enhanced local variable declaration logic (mapping to a switch with one case)
             List<JCExpression> nestedNPEParams = List.of(makeNull());
             JCNewClass nestedNPE = makeNewClass(syms.nullPointerExceptionType, nestedNPEParams);
 

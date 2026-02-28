@@ -25,10 +25,8 @@
 
 package com.sun.tools.javac.tree;
 
-import com.sun.source.tree.MatchStatementTree;
 import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.tree.JCTree.*;
-import jdk.internal.javac.PreviewFeature;
 
 /** A subclass of Tree.Visitor, this class defines
  *  a general tree scanner pattern. Translation proceeds recursively in
@@ -250,7 +248,7 @@ public class TreeScanner extends Visitor {
         scan(tree.detail);
     }
 
-    public void visitMatch(JCMatch tree) {
+    public void visitEnhancedVariableDecl(JCEnhancedVariableDecl tree) {
         scan(tree.pattern);
         scan(tree.expr);
     }

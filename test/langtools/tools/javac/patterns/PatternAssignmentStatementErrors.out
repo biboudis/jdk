@@ -1,5 +1,0 @@
-PatternAssignmentStatementErrors.java:15:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: PatternAssignmentStatementErrors.OPoint, PatternAssignmentStatementErrors.Point)
-PatternAssignmentStatementErrors.java:19:19: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, PatternAssignmentStatementErrors.Point)
-PatternAssignmentStatementErrors.java:11:9: compiler.err.not.exhaustive.statement
-PatternAssignmentStatementErrors.java:15:9: compiler.err.not.exhaustive.statement
-4 errors

@@ -79,9 +79,9 @@ public interface Tree {
         ASSERT(AssertTree.class),
 
         /**
-         * Used for instances of {@link MatchStatementTree}.
+         * Used for instances of {@link EnhancedVariableDeclTree}.
          */
-        MATCH_STATEMENT(MatchStatementTree.class),
+        ENHANCED_VARIABLE_DECL(EnhancedVariableDeclTree.class),
 
         /**
          * Used for instances of {@link AssignmentTree}.

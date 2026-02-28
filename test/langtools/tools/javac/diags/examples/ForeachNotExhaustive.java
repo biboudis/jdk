@@ -21,7 +21,7 @@
  * questions.
  */
 
-// key: compiler.misc.feature.match.statements
+// key: compiler.misc.feature.enhanced.variable.decls
 // key: compiler.warn.preview.feature.use.plural
 // key: compiler.err.foreach.not.exhaustive.on.type
 // options: --enable-preview -source ${jdk.version} -Xlint:preview

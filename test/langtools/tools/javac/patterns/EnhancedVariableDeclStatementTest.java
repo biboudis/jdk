@@ -2,16 +2,16 @@
  * @test /nodynamiccopyright/
  * @summary
  * @enablePreview
- * @compile PatternAssignmentStatementTest.java
- * @run main PatternAssignmentStatementTest
+ * @compile EnhancedVariableDeclStatementTest.java
+ * @run main EnhancedVariableDeclStatementTest
  */
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class PatternAssignmentStatementTest {
+public class EnhancedVariableDeclStatementTest {
     public static void main(String[] args) {
         basicTest();
-        assertMatchExceptionWithNested(PatternAssignmentStatementTest::raiseExceptionTest, TestPatternFailed.class);
+        assertMatchExceptionWithNested(EnhancedVariableDeclStatementTest::raiseExceptionTest, TestPatternFailed.class);
     }
 
     static void basicTest() {

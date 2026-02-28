@@ -188,7 +188,7 @@ class ReplParser extends JavacParser {
                 } else {
                     int pos = token.pos;
 
-                    if (analyzePatternAssignment() == LocalVariableDeclOrRecordPattern.RecordPattern) {
+                    if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl) {
                         return List.<JCTree>of(parseStatement());
                     }
 

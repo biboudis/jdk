@@ -231,11 +231,11 @@ public class TreeCopier<P> implements TreeVisitor<JCTree,P> {
     }
 
     @DefinedBy(Api.COMPILER_TREE)
-    public JCTree visitMatchStatement(MatchStatementTree node, P p) {
-        JCMatch t = (JCMatch) node;
+    public JCTree visitEnhancedVariableDecl(EnhancedVariableDeclTree node, P p) {
+        JCEnhancedVariableDecl t = (JCEnhancedVariableDecl) node;
         JCPattern recordPattern = copy(t.pattern, p);
         JCExpression expr = copy(t.expr, p);
-        return M.at(t.pos).Match(recordPattern, expr);
+        return M.at(t.pos).EnhancedVarDef(recordPattern, expr);
     }
 
     @DefinedBy(Api.COMPILER_TREE)

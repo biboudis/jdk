@@ -2,9 +2,9 @@
  * @test /nodynamiccopyright/
  * @summary
  * @enablePreview
- * @compile -XDfind=all PatternAssignmentEnhancedForTestAllAnalyzers.java
+ * @compile -XDfind=all EnhancedVariableDeclInEnhancedForTestAllAnalyzers.java
  */
-public class PatternAssignmentEnhancedForTestAllAnalyzers {
+public class EnhancedVariableDeclInEnhancedForTestAllAnalyzers {
     private void test(Iterable<? extends R> l) {
         for (R(Object a) : l) { }
     }

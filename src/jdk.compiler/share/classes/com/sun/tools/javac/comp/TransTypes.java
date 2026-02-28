@@ -530,7 +530,7 @@ public class TransTypes extends TreeTranslator {
         result = tree;
     }
 
-    public void visitMatch(JCMatch tree) {
+    public void visitEnhancedVariableDecl(JCEnhancedVariableDecl tree) {
         tree.pattern = translate(tree.pattern);
         tree.expr = translate(tree.expr, erasure(tree.expr.type));
         result = tree;

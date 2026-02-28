@@ -661,7 +661,7 @@ public class Flow {
                 tree.cond != null && !tree.cond.type.isTrue());
         }
 
-        public void visitMatch(JCMatch tree) {
+        public void visitEnhancedVariableDecl(JCEnhancedVariableDecl tree) {
             ListBuffer<PendingExit> prevPendingExits = pendingExits;
             pendingExits = new ListBuffer<>();
 

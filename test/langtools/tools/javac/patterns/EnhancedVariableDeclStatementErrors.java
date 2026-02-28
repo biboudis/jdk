@@ -2,10 +2,10 @@
  * @test /nodynamiccopyright/
  * @summary
  * @enablePreview
- * @compile/fail/ref=PatternAssignmentStatementErrors.out -XDrawDiagnostics -XDshould-stop.at=FLOW PatternAssignmentStatementErrors.java
+ * @compile/fail/ref=EnhancedVariableDeclStatementErrors.out -XDrawDiagnostics -XDshould-stop.at=FLOW EnhancedVariableDeclStatementErrors.java
  */
 
-public class PatternAssignmentStatementErrors {
+public class EnhancedVariableDeclStatementErrors {
 
     static void exhaustivity_error1(Object point) {
         Point(var x, var y) = point;

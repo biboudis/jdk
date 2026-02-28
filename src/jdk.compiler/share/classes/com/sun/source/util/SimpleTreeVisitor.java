@@ -485,7 +485,7 @@ public class SimpleTreeVisitor <R,P> implements TreeVisitor<R,P> {
      * @return  the result of {@code defaultAction}
      */
     @Override
-    public R visitMatchStatement(MatchStatementTree node, P p) {
+    public R visitEnhancedVariableDecl(EnhancedVariableDeclTree node, P p) {
         return defaultAction(node, p);
     }
 

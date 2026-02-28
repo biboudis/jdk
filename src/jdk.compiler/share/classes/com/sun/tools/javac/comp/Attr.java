@@ -1559,7 +1559,7 @@ public class Attr extends JCTree.Visitor {
         bindings.forEach(BindingSymbol::preserveBinding);
     }
 
-    public void visitMatch(JCMatch tree) {
+    public void visitEnhancedVariableDecl(JCEnhancedVariableDecl tree) {
         attribExpr(tree.expr, env);
         attribExpr(tree.pattern, env);
 

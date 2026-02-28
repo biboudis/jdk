@@ -1,0 +1,8 @@
+EnhancedLocalVariableDeclInEnhancedForErrors.java:35:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedLocalVariableDeclInEnhancedForErrors.Interface)
+EnhancedLocalVariableDeclInEnhancedForErrors.java:12:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedLocalVariableDeclInEnhancedForErrors.Point, java.lang.Object
+EnhancedLocalVariableDeclInEnhancedForErrors.java:18:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedLocalVariableDeclInEnhancedForErrors.Point, java.lang.Object
+EnhancedLocalVariableDeclInEnhancedForErrors.java:24:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedLocalVariableDeclInEnhancedForErrors.OPoint, EnhancedLocalVariableDeclInEnhancedForErrors.OPoint
+EnhancedLocalVariableDeclInEnhancedForErrors.java:30:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedLocalVariableDeclInEnhancedForErrors.Rec, compiler.misc.type.captureof: 1, ?
+- compiler.note.preview.filename: EnhancedLocalVariableDeclInEnhancedForErrors.java, DEFAULT
+- compiler.note.preview.recompile
+5 errors

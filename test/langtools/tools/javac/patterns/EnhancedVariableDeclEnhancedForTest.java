@@ -2,15 +2,15 @@
  * @test /nodynamiccopyright/
  * @summary
  * @enablePreview
- * @compile PatternAssignmentEnhancedForTest.java
- * @run main PatternAssignmentEnhancedForTest
+ * @compile EnhancedVariableDeclEnhancedForTest.java
+ * @run main EnhancedVariableDeclEnhancedForTest
  */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class PatternAssignmentEnhancedForTest {
+public class EnhancedVariableDeclEnhancedForTest {
     public static void main(String[] args) {
 
         List<Point>             in                   = List.of(new Point(1, 2), new Point(2, 3));
@@ -31,13 +31,13 @@ public class PatternAssignmentEnhancedForTest {
         assertEquals(8, iteratorEnhancedFor(in));
         assertEquals(8, arrayEnhancedFor(inArray));
         assertEquals(8, simpleDecostructionPatternWithAccesses(in));
-        assertEx(PatternAssignmentEnhancedForTest::simpleDecostructionPatternWithAccesses, null, NullPointerException.class);
-        assertEx(PatternAssignmentEnhancedForTest::simpleDecostructionPatternWithAccesses, inWithNull, NullPointerException.class);
-        assertEx(PatternAssignmentEnhancedForTest::simpleDecostructionPatternWithAccesses, inWithNullComponent, NullPointerException.class);
-        assertMatchExceptionWithNested(PatternAssignmentEnhancedForTest::simpleDecostructionPatternException, inWithPointEx, TestPatternFailed.class);
-        assertEx(PatternAssignmentEnhancedForTest::simpleDecostructionPatternWithAccesses, (List<Point>) inRaw, ClassCastException.class);
+        assertEx(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternWithAccesses, null, NullPointerException.class);
+        assertEx(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternWithAccesses, inWithNull, NullPointerException.class);
+        assertEx(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternWithAccesses, inWithNullComponent, NullPointerException.class);
+        assertMatchExceptionWithNested(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternException, inWithPointEx, TestPatternFailed.class);
+        assertEx(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternWithAccesses, (List<Point>) inRaw, ClassCastException.class);
         assertEquals(2, simpleDecostructionPatternNoComponentAccess(in));
-        assertEx(PatternAssignmentEnhancedForTest::simpleDecostructionPatternNoComponentAccess, inWithNull, NullPointerException.class);
+        assertEx(EnhancedVariableDeclEnhancedForTest::simpleDecostructionPatternNoComponentAccess, inWithNull, NullPointerException.class);
         assertEquals(2, simpleDecostructionPatternNoComponentAccess(inWithNullComponent));
         assertEquals(8, varAndConcrete(in));
         assertEquals(3, returnFromEnhancedFor(in));

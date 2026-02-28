@@ -28,30 +28,30 @@ package com.sun.source.tree;
 import jdk.internal.javac.PreviewFeature;
 
 /**
- * A tree node for a "match" {@code match} statement.
+ * A tree node for an Enhanced Local Variable Declaration Statement.
  *
  * For example:
  * <pre>
- *   match <em>record pattern</em> = <em>expression</em>;
+ *   <em>record pattern</em> = <em>expression</em>;
  * </pre>
  *
- * @jls 14.23.1 match statements
+ * @jls 14.23.1 Enhanced Local Variable Declaration Statements
  *
  * @author Angelos Bimpoudis
  * @since 21
  */
-public interface MatchStatementTree extends StatementTree {
+public interface EnhancedVariableDeclTree extends StatementTree {
     /**
-     * Returns the pattern for the match statement.
+     * Returns the pattern for the enhanced local variable declaration statement.
      * @return pattern
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.MATCH_STATEMENTS, reflective=true)
+    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     Tree getPattern();
 
     /**
      * Returns the expression to be matched.
      * @return the expression
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.MATCH_STATEMENTS, reflective=true)
+    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     ExpressionTree getExpression();
 }

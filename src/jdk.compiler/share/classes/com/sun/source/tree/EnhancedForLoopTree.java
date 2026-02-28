@@ -52,7 +52,7 @@ public interface EnhancedForLoopTree extends StatementTree {
      *
      * @since 26
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.MATCH_STATEMENTS, reflective=true)
+    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     public enum DeclarationKind {
         /** enum constant for local variable declarations */
         VARIABLE,
@@ -71,7 +71,7 @@ public interface EnhancedForLoopTree extends StatementTree {
      * @return the control variable or pattern
      * @since 26
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.MATCH_STATEMENTS, reflective=true)
+    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     Tree getVariableOrRecordPattern();
 
     /**
@@ -91,6 +91,6 @@ public interface EnhancedForLoopTree extends StatementTree {
      * @return the kind of the declaration
      * @since 20
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.MATCH_STATEMENTS, reflective=true)
+    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     DeclarationKind getDeclarationKind();
 }

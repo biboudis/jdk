@@ -22,22 +22,20 @@
  */
 /*
  * @test
- * @summary Tests for match statements
+ * @summary Tests for enhanced local variable declarations
  * @build KullaTesting TestingInputStream
- * @run junit MatchStatementsTest
+ * @run junit EnhancedVariableDeclarationsTest
  */
-import jdk.jshell.JShell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.function.Consumer;
 
-public class MatchStatementsTest extends KullaTesting {
+public class EnhancedVariableDeclarationsTest extends KullaTesting {
 
     @Test
-    public void testMatchStatement() {
+    public void testEnhancedLocalVarDecls() {
         assertEval("record Point(int a) {}");
         assertEquals(varKey(assertEval("Point p = new Point(42);")).name(), "p");
         assertEval("Point(int b) = p;");
