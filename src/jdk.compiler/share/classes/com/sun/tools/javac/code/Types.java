@@ -50,6 +50,7 @@ import com.sun.tools.javac.comp.Check;
 import com.sun.tools.javac.comp.Enter;
 import com.sun.tools.javac.comp.Env;
 import com.sun.tools.javac.jvm.ClassFile;
+import com.sun.tools.javac.code.Source.Feature;
 import com.sun.tools.javac.util.*;
 
 import static com.sun.tools.javac.code.BoundKind.*;
@@ -101,6 +102,7 @@ public class Types {
 
     public final Warner noWarnings;
     public final boolean dumpStacktraceOnError;
+    private final boolean allowEnhancedVariableDecls;
 
     // <editor-fold defaultstate="collapsed" desc="Instantiating">
     public static Types instance(Context context) {
@@ -116,6 +118,7 @@ public class Types {
         syms = Symtab.instance(context);
         names = Names.instance(context);
         Source source = Source.instance(context);
+        Preview preview = Preview.instance(context);
         chk = Check.instance(context);
         enter = Enter.instance(context);
         capturedName = names.fromString("<captured wildcard>");
@@ -124,6 +127,8 @@ public class Types {
         noWarnings = new Warner(null);
         Options options = Options.instance(context);
         dumpStacktraceOnError = options.isSet("dev") || options.isSet(DOE);
+        allowEnhancedVariableDecls = Feature.ENHANCED_VARIABLE_DECLS.allowedInSource(source) &&
+                                     (preview.isEnabled() || !preview.isPreview(Feature.ENHANCED_VARIABLE_DECLS));
     }
     // </editor-fold>
 
@@ -2408,7 +2413,7 @@ public class Types {
                 break;
             }
         }
-        if (isNR1S(t, s)) {
+        if (allowEnhancedVariableDecls && isNR1S(t, s)) {
             return true;
         }
         else {
