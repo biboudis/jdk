@@ -80,6 +80,7 @@ public interface Tree {
 
         /**
          * Used for instances of {@link EnhancedVariableDeclTree}.
+         * @since 27
          */
         ENHANCED_VARIABLE_DECL(EnhancedVariableDeclTree.class),
 

@@ -50,7 +50,7 @@ public interface EnhancedForLoopTree extends StatementTree {
      * <li> record patterns
      * </ul>
      *
-     * @since 26
+     * @since 27
      */
     @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     public enum DeclarationKind {
@@ -69,7 +69,7 @@ public interface EnhancedForLoopTree extends StatementTree {
     /**
      * Returns the control variable or pattern for the loop.
      * @return the control variable or pattern
-     * @since 26
+     * @since 27
      */
     @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     Tree getVariableOrRecordPattern();
@@ -89,7 +89,7 @@ public interface EnhancedForLoopTree extends StatementTree {
     /**
      * Returns the kind of the declaration of the "enhanced" {@code for}.
      * @return the kind of the declaration
-     * @since 20
+     * @since 27
      */
     @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     DeclarationKind getDeclarationKind();

@@ -38,20 +38,19 @@ import jdk.internal.javac.PreviewFeature;
  * @jls 14.23.1 Enhanced Local Variable Declaration Statements
  *
  * @author Angelos Bimpoudis
- * @since 21
+ * @since 27
  */
+@PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
 public interface EnhancedVariableDeclTree extends StatementTree {
     /**
      * Returns the pattern for the enhanced local variable declaration statement.
      * @return pattern
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     Tree getPattern();
 
     /**
      * Returns the expression to be matched.
      * @return the expression
      */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
     ExpressionTree getExpression();
 }

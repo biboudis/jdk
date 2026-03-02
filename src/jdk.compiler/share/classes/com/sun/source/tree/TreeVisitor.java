@@ -94,6 +94,8 @@ public interface TreeVisitor<R,P> {
      * @param node the node being visited
      * @param p a parameter value
      * @return a result value
+     *
+     * @since 27
      */
     R visitEnhancedVariableDecl(EnhancedVariableDeclTree node, P p);
 
