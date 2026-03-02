@@ -67,12 +67,12 @@ public interface EnhancedForLoopTree extends StatementTree {
     VariableTree getVariable();
 
     /**
-     * Returns the control variable or pattern for the loop.
-     * @return the control variable or pattern
+     * Returns the record pattern for the loop.
+     * @return the record pattern, or {@code null} if this "enhanced" {@code for} uses a local variable declaration
      * @since 27
      */
     @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    Tree getVariableOrRecordPattern();
+    PatternTree getRecordPattern();
 
     /**
      * Returns the expression yielding the values for the control variable.

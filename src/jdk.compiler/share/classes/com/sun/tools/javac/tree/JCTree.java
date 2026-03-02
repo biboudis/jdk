@@ -1314,7 +1314,9 @@ public abstract class JCTree implements Tree, Cloneable, DiagnosticPosition {
             return varOrRecordPattern instanceof JCVariableDecl var ? var : null;
         }
         @DefinedBy(Api.COMPILER_TREE)
-        public JCTree getVariableOrRecordPattern() { return varOrRecordPattern; }
+        public JCPattern getRecordPattern() {
+            return varOrRecordPattern instanceof JCPattern pattern ? pattern : null;
+        }
         @DefinedBy(Api.COMPILER_TREE)
         public JCExpression getExpression() { return expr; }
         @DefinedBy(Api.COMPILER_TREE)

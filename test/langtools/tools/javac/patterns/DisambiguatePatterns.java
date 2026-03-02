@@ -37,7 +37,6 @@ import com.sun.source.tree.ConstantCaseLabelTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.PatternCaseLabelTree;
-import com.sun.source.tree.PatternTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree.Kind;
@@ -233,10 +232,9 @@ public class DisambiguatePatterns {
             }
         } else {
             EnhancedForLoopTree ef = (EnhancedForLoopTree) st;
-            ForType actualType = switch (ef.getVariableOrRecordPattern()) {
-                case PatternTree pattern -> ForType.ENHANCED_FOR_WITH_PATTERNS;
-                default -> ForType.ENHANCED_FOR;
-            };
+            ForType actualType = ef.getRecordPattern() != null
+                    ? ForType.ENHANCED_FOR_WITH_PATTERNS
+                    : ForType.ENHANCED_FOR;
             if (forType != actualType) {
                 throw new AssertionError("Expected: " + forType + ", actual: " + actualType +
                         ", for: " + code + ", parsed: " + result);
