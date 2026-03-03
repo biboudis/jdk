@@ -2422,15 +2422,23 @@ public class Types {
     }
     // where
         public boolean isNR1S(Type t, Type s) {
-            if (t.tsym instanceof ClassSymbol tsm
-                    && tsm.isSealed()
-                    && tsm.getPermittedSubclasses().size() == 1
-                    && s.tsym instanceof ClassSymbol ssm
-                    && ssm.isFinal()
-                    && isSameType(erasure(tsm.getPermittedSubclasses().head), erasure(s))) {
-                return true;
+            if (!(t.tsym instanceof ClassSymbol tsm)
+                    || !tsm.isSealed()
+                    || tsm.getPermittedSubclasses().size() != 1
+                    || !(s.tsym instanceof ClassSymbol ssm)
+                    || !ssm.isFinal()) {
+                return false;
             }
-            return false;
+
+            // Ensure s is exactly the unique permitted subtype, not just any transitive subtype.
+            Type permitted = tsm.getPermittedSubclasses().head;
+            if (permitted.tsym != s.tsym) {
+                return false;
+            }
+
+            // Compare instantiated supertype so generic arguments match.
+            Type sAsT = asSuper(s, tsm);
+            return sAsT != null && isSameType(sAsT, t);
         }
     // </editor-fold>
 

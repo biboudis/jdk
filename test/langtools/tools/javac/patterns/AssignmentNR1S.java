@@ -2,8 +2,7 @@
  * @test /nodynamiccopyright/
  * @summary
  * @compile/fail/ref=AssignmentNR1S.out -XDrawDiagnostics AssignmentNR1S.java
- * @compile --enable-preview --source ${jdk.version} AssignmentNR1S.java
- * @run main/othervm --enable-preview AssignmentNR1S
+ * @compile/fail/ref=AssignmentNR1SPreview.out --enable-preview --source ${jdk.version} -XDrawDiagnostics AssignmentNR1S.java
  */
 import java.util.Objects;
 import java.util.List;
@@ -64,6 +63,19 @@ public class AssignmentNR1S {
             count++;
         }
         assertEquals(2, count);
+    }
+
+    static void method7() {
+        SA2<Integer> sa = new SB2<>();
+        SB2<String> sb = sa; // always error: under preview or non-preview
+    }
+
+    static sealed interface SI permits Mid {}
+    static non-sealed interface Mid extends SI {}
+    static final class Leaf implements Mid {}
+    static void method8() {
+        SI si = new Leaf();
+        Leaf leaf = si; // always error: under preview or non-preview
     }
 
     static void assertEquals(Object expected, Object actual) {
