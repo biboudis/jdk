@@ -9,8 +9,11 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class EnhancedVariableDeclStatementTest {
+    static int x = -1;
+
     public static void main(String[] args) {
         basicTest();
+        scopeAndShadowingTest();
         assertMatchExceptionWithNested(EnhancedVariableDeclStatementTest::raiseExceptionTest, TestPatternFailed.class);
     }
 
@@ -36,6 +39,25 @@ public class EnhancedVariableDeclStatementTest {
         PointEx pointEx = new PointEx(1, 2);
         PointEx(Integer a_ex, Integer b_noex) = pointEx;
         return a_ex;
+    }
+
+    static void scopeAndShadowingTest() {
+        Point p = new Point(10, 20);
+        int sum;
+
+        {
+            Point(Integer x, Integer y) = p;
+            assertEquals(10, x);
+            sum = x + y;
+        }
+
+        assertEquals(30, sum);
+        assertEquals(-1, EnhancedVariableDeclStatementTest.x);
+
+        {
+            Point(Integer x, Integer y) = new Point(1, 2);
+            assertEquals(3, x + y);
+        }
     }
 
     sealed interface IPoint permits Point {}
