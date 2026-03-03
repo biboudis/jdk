@@ -1195,10 +1195,7 @@ public class TransPatterns extends TreeTranslator {
                     null);
 
             // enhanced local variable declaration logic (mapping to a switch with one case)
-            List<JCExpression> nestedNPEParams = List.of(makeNull());
-            JCNewClass nestedNPE = makeNewClass(syms.nullPointerExceptionType, nestedNPEParams);
-
-            List<JCExpression> matchExParams = List.of(makeNull(), nestedNPE);
+            List<JCExpression> matchExParams = List.of(makeNull(), makeNull());
             JCTree.JCThrow thr = make.Throw(makeNewClass(syms.matchExceptionType, matchExParams));
 
             JCInstanceOf instanceOfTree = make.TypeTest(make.Ident(letBoundCandidate).setType(expr.type), tree.pattern);
@@ -1249,12 +1246,6 @@ public class TransPatterns extends TreeTranslator {
 
                 JCStatement newForVariableDeclaration =
                         make.at(tree.pos).VarDef(currentValue, null).setType(selectorType);
-
-                List<JCExpression> nestedNPEParams = List.of(makeNull());
-                JCNewClass nestedNPE = makeNewClass(syms.nullPointerExceptionType, nestedNPEParams);
-
-                List<JCExpression> matchExParams = List.of(makeNull(), nestedNPE);
-                JCTree.JCThrow thr = make.Throw(makeNewClass(syms.matchExceptionType, matchExParams));
 
                 JCCase casePattern = make.Case(CaseTree.CaseKind.STATEMENT,
                         List.of(make.PatternCaseLabel(jcRecordPattern)),
