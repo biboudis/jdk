@@ -3107,10 +3107,7 @@ public class JavacParser implements Parser {
                 JCExpression type = unannotatedType(false);
 
                 JCTree pattern = parsePattern(patternPos, mods, type, false, false);
-
-                if (pattern != null) {
-                    checkSourceLevel(token.pos, Feature.ENHANCED_VARIABLE_DECLS);
-                }
+                checkSourceLevel(patternPos, Feature.ENHANCED_VARIABLE_DECLS);
                 accept(COLON);
                 JCExpression expr = parseExpression();
                 accept(RPAREN);
