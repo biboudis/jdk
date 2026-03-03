@@ -13,6 +13,7 @@ public class EnhancedVariableDeclStatementTest {
 
     public static void main(String[] args) {
         basicTest();
+        targetTypingTest();
         scopeAndShadowingTest();
         assertMatchExceptionWithNested(EnhancedVariableDeclStatementTest::raiseExceptionTest, TestPatternFailed.class);
     }
@@ -60,6 +61,15 @@ public class EnhancedVariableDeclStatementTest {
         }
     }
 
+    static void targetTypingTest() {
+        Box<String> box = new Box<>("ok");
+        Box(var value) = box;
+        assertEquals(1, pick(value));
+    }
+    static int pick(String value) { return 1; }
+    static int pick(Object value) { return 2; }
+    record Box<T>(T value) { }
+
     sealed interface IPoint permits Point {}
     record Point(Integer x, Integer y) implements IPoint { }
     record PointP(int x, double y) { }
@@ -70,6 +80,7 @@ public class EnhancedVariableDeclStatementTest {
         }
     }
     static final String EXCEPTION_MESSAGE = "exception-message";
+
     public static class TestPatternFailed extends AssertionError {
         public TestPatternFailed(String message) {
             super(message);
