@@ -3012,8 +3012,9 @@ public class JavacParser implements Parser {
         dc = token.docComment();
         if (isRecordStart() && allowRecords) {
             return List.of(recordDeclaration(F.at(pos).Modifiers(0), dc));
-        } else if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl && allowEnhancedVariableDecls) {
+        } else if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl) {
             int patternPos = token.pos;
+            checkSourceLevel(patternPos, Feature.ENHANCED_VARIABLE_DECLS);
             JCModifiers mods = optFinal(0);
             JCExpression type = unannotatedType(false);
 

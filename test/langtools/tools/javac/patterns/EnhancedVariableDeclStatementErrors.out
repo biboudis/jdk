@@ -2,4 +2,6 @@ EnhancedVariableDeclStatementErrors.java:15:31: compiler.err.prob.found.req: (co
 EnhancedVariableDeclStatementErrors.java:19:19: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclStatementErrors.Point)
 EnhancedVariableDeclStatementErrors.java:11:9: compiler.err.not.exhaustive.statement
 EnhancedVariableDeclStatementErrors.java:15:9: compiler.err.not.exhaustive.statement
+- compiler.note.preview.filename: EnhancedVariableDeclStatementErrors.java, DEFAULT
+- compiler.note.preview.recompile
 4 errors
