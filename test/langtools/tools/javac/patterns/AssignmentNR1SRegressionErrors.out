@@ -1,0 +1,3 @@
+AssignmentNR1SRegressionErrors.java:12:26: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.SA2<java.lang.Integer>, AssignmentNR1SRegressionErrors.SB2<java.lang.String>)
+AssignmentNR1SRegressionErrors.java:20:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.SI, AssignmentNR1SRegressionErrors.Leaf)
+2 errors

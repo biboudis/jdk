@@ -106,7 +106,6 @@ public class Lower extends TreeTranslator {
     private final boolean optimizeOuterThis;
     private final boolean nullCheckOuterThis;
     private final boolean useMatchException;
-    private final boolean allowEnhancedVariableDecls;
     private final HashMap<TypePairs, String> typePairToName;
     private int variableIndex = 0;
 
@@ -142,8 +141,6 @@ public class Lower extends TreeTranslator {
         Preview preview = Preview.instance(context);
         useMatchException = Feature.PATTERN_SWITCH.allowedInSource(source) &&
                             (preview.isEnabled() || !preview.isPreview(Feature.PATTERN_SWITCH));
-        allowEnhancedVariableDecls = Feature.ENHANCED_VARIABLE_DECLS.allowedInSource(source) &&
-                                     (preview.isEnabled() || !preview.isPreview(Feature.ENHANCED_VARIABLE_DECLS));
         typePairToName = TypePairs.initialize(syms);
     }
 
@@ -3736,10 +3733,6 @@ public class Lower extends TreeTranslator {
         try {
             if (tree.init != null) {
                 tree.init = translate(tree.init, tree.type);
-
-                if (allowEnhancedVariableDecls && types.isNR1S(tree.init.type, tree.vartype.type)){
-                    tree = make.VarDef(tree.sym, make.TypeCast(tree.vartype.type, tree.init)) ;
-                }
             }
 
             result = tree;

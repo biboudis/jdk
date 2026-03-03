@@ -1,0 +1,9 @@
+AssignmentNR1S.java:27:18: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA1, AssignmentNR1S.SB1)
+AssignmentNR1S.java:32:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA1, AssignmentNR1S.SB1)
+AssignmentNR1S.java:36:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA1, AssignmentNR1S.SB1)
+AssignmentNR1S.java:43:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA2<T>, AssignmentNR1S.SB2<T>)
+AssignmentNR1S.java:50:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.IR, AssignmentNR1S.R1)
+AssignmentNR1S.java:58:14: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.IFoo, AssignmentNR1S.FooImpl)
+AssignmentNR1S.java:64:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.IFoo, AssignmentNR1S.FooImpl)
+AssignmentNR1S.java:71:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA1, AssignmentNR1S.SB1)
+8 errors

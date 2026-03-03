@@ -1,5 +1,0 @@
-AssignmentNR1S.java:70:26: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SA2<java.lang.Integer>, AssignmentNR1S.SB2<java.lang.String>)
-AssignmentNR1S.java:78:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1S.SI, AssignmentNR1S.Leaf)
-- compiler.note.preview.filename: AssignmentNR1S.java, DEFAULT
-- compiler.note.preview.recompile
-2 errors
