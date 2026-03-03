@@ -43,6 +43,8 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.parser.JavacParser;
 import com.sun.tools.javac.parser.ParserFactory;
+import com.sun.tools.javac.tree.JCTree.JCEnhancedVariableDecl;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.main.Option;
 import com.sun.tools.javac.util.Log;
@@ -126,17 +128,20 @@ public class DisambiguatePatterns {
                                  ExpressionType.PATTERN);
         test.disambiguationTest("R(int x) when (x > 0)",
                                  ExpressionType.PATTERN);
-        test.forDisambiguationTest("T[] a", ForType.ENHANCED_FOR);
-        test.forDisambiguationTest("@Annot(field = \"test\") Point p", ForType.ENHANCED_FOR);
-        test.forDisambiguationTest("R(T[] a)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("Point(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("ForEachPatterns.Point(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("GPoint<Integer>(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("GPoint<Point>(Point(Integer a, Integer b), Point c)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("GPoint<Point>(Point(var a, Integer b), Point c)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("GPoint<VoidPoint>(VoidPoint(), VoidPoint())", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("RecordOfLists(List<Integer> lr)", ForType.ENHANCED_FOR_WITH_PATTERNS);
-        test.forDisambiguationTest("RecordOfLists2(List<List<Integer>> lr)", ForType.ENHANCED_FOR_WITH_PATTERNS);
+
+        // Local Variable Declaration or Enhanced Local Variable Declaration in the header of the enhanced-for?
+
+        test.forDisambiguationTest("T[] a", ForType.ENHANCED_FOR_WITH_LVDS);
+        test.forDisambiguationTest("@Annot(field = \"test\") Point p", ForType.ENHANCED_FOR_WITH_LVDS);
+        test.forDisambiguationTest("R(T[] a)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Point(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("ForEachPatterns.Point(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("GPoint<Integer>(Integer a, Integer b)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("GPoint<Point>(Point(Integer a, Integer b), Point c)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("GPoint<Point>(Point(var a, Integer b), Point c)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("GPoint<VoidPoint>(VoidPoint(), VoidPoint())", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("RecordOfLists(List<Integer> lr)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("RecordOfLists2(List<List<Integer>> lr)", ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
         test.forDisambiguationTest("T[].class.getName()", ForType.TRADITIONAL_FOR);
         test.forDisambiguationTest("T[].class", ForType.TRADITIONAL_FOR, "compiler.err.not.stmt");
         test.forDisambiguationTest("method()", ForType.TRADITIONAL_FOR);
@@ -144,6 +149,21 @@ public class DisambiguatePatterns {
         test.forDisambiguationTest("method2((Integer a) -> 42)", ForType.TRADITIONAL_FOR);
         test.forDisambiguationTest("m(cond ? b() : i)", ForType.TRADITIONAL_FOR);
         test.forDisambiguationTest("m((GPoint<?>)null, cond ? b() : i)", ForType.TRADITIONAL_FOR);
+
+        // Local Variable Declaration or Enhanced Local Variable Declaration?
+        test.variableDeclDisambiguationTest("Point(Integer a, Integer b) = p", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("Point(var a, var b) = p", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("R(T[] a) = r", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("ForEachPatterns.Point(Integer a, Integer b) = fp", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("GPoint<Point>(Point(var a, Integer b), Point c) = gp", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("GPoint<Point>(Point(@Ann Integer a, @Ann Integer b), @Ann Point c) = gp", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("RecordOfLists2(List<List<Integer>> lr) = rol2", LocalVariableDeclType.ENHANCED_LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("Point p = p0", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("@Ann Point p = p0", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("GPoint<Integer> gp = g", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("T[] a = arr", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("int i = 0", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
+        test.variableDeclDisambiguationTest("var v = method()", LocalVariableDeclType.LOCAL_VARIABLE_DECL);
     }
 
     private final ParserFactory factory;
@@ -204,7 +224,7 @@ public class DisambiguatePatterns {
                         }
                     }
                     """;
-            case ENHANCED_FOR, ENHANCED_FOR_WITH_PATTERNS ->
+            case ENHANCED_FOR_WITH_LVDS, ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS ->
                     """
                     public class Test {
                         private void test() {
@@ -233,8 +253,8 @@ public class DisambiguatePatterns {
         } else {
             EnhancedForLoopTree ef = (EnhancedForLoopTree) st;
             ForType actualType = ef.getRecordPattern() != null
-                    ? ForType.ENHANCED_FOR_WITH_PATTERNS
-                    : ForType.ENHANCED_FOR;
+                    ? ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS
+                    : ForType.ENHANCED_FOR_WITH_LVDS;
             if (forType != actualType) {
                 throw new AssertionError("Expected: " + forType + ", actual: " + actualType +
                         ", for: " + code + ", parsed: " + result);
@@ -242,15 +262,64 @@ public class DisambiguatePatterns {
         }
     }
 
+    void variableDeclDisambiguationTest(String snippet, LocalVariableDeclType varDeclType, String... expectedErrors) {
+        errors.clear();
+
+        String code = """
+                      public class Test {
+                          private void test() {
+                              SNIPPET;
+                          }
+                      }
+                      """.replace("SNIPPET", snippet);
+        JavacParser parser = factory.newParser(code, false, false, false);
+        CompilationUnitTree result = parser.parseCompilationUnit();
+        if (!Arrays.asList(expectedErrors).equals(errors)) {
+            throw new AssertionError("Expected errors: " + Arrays.asList(expectedErrors) +
+                    ", actual: " + errors +
+                    ", for: " + code);
+        }
+        ClassTree clazz = (ClassTree) result.getTypeDecls().get(0);
+        MethodTree method = (MethodTree) clazz.getMembers().get(0);
+        StatementTree st = method.getBody().getStatements().get(0);
+        switch (varDeclType) {
+            case ENHANCED_LOCAL_VARIABLE_DECL -> {
+                if (!(st instanceof JCEnhancedVariableDecl)) {
+                    throw new AssertionError("Expected JCEnhancedVariableDecl, got: " + st.getClass() +
+                            ", for: " + code + ", parsed: " + result);
+                }
+                if (st.getKind() != Kind.ENHANCED_VARIABLE_DECL) {
+                    throw new AssertionError("Expected kind ENHANCED_VARIABLE_DECL, got: " + st.getKind() +
+                            ", for: " + code + ", parsed: " + result);
+                }
+            }
+            case LOCAL_VARIABLE_DECL -> {
+                if (!(st instanceof JCVariableDecl)) {
+                    throw new AssertionError("Expected JCVariableDecl, got: " + st.getClass() +
+                            ", for: " + code + ", parsed: " + result);
+                }
+                if (st.getKind() != Kind.VARIABLE) {
+                    throw new AssertionError("Expected kind VARIABLE, got: " + st.getKind() +
+                            ", for: " + code + ", parsed: " + result);
+                }
+            }
+        }
+    }
+
     enum ForType {
         TRADITIONAL_FOR,
-        ENHANCED_FOR,
-        ENHANCED_FOR_WITH_PATTERNS;
+        ENHANCED_FOR_WITH_LVDS,
+        ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS;
     }
 
     enum ExpressionType {
         PATTERN,
         EXPRESSION;
+    }
+
+    enum LocalVariableDeclType {
+        LOCAL_VARIABLE_DECL,
+        ENHANCED_LOCAL_VARIABLE_DECL;
     }
 
 }
