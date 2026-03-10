@@ -2870,7 +2870,7 @@ public class JavacParser implements Parser {
 
     /*
      * Parse a Statement (JLS 14.5). As an enhancement to improve error recovery,
-     * this method will also recognize variable and class declarations (which are
+     * this method will also recognize variable, enhanced local variable, and class declarations (which are
      * not legal for a Statement) by delegating the parsing to BlockStatement (JLS 14.2).
      * If any illegal declarations are found, they will be wrapped in an erroneous tree,
      * and an error will be produced by this method.
@@ -2890,6 +2890,9 @@ public class JavacParser implements Parser {
                 break;
             case VARDEF:
                 error = Errors.VariableNotAllowed;
+                break;
+            case ENHANCED_VAR_DECL:
+                error = Errors.EnhancedVariableNotAllowed;
                 break;
             }
             if (error != null) {

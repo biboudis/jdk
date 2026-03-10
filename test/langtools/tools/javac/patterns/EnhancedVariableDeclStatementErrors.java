@@ -34,6 +34,39 @@ public class EnhancedVariableDeclStatementErrors {
         Point(var sx, var sy) = point;
     }
 
+    static void unbraced_if_else_error(Point point, boolean cond) {
+        if (cond)
+            Point(var x1, var y1) = point;
+        else
+            Point(var x2, var y2) = point;
+    }
+
+    static void unbraced_for_error(Point point) {
+        for (int i = 0; i < 1; i++)
+            Point(var x, var y) = point;
+    }
+
+    static void unbraced_enhanced_for_error(Point point) {
+        for (Point current : new Point[] { point })
+            Point(var x, var y) = current;
+    }
+
+    static void unbraced_while_error(Point point, boolean cond) {
+        while (cond)
+            Point(var x, var y) = point;
+    }
+
+    static void unbraced_do_error(Point point, boolean cond) {
+        do
+            Point(var x, var y) = point;
+        while (cond);
+    }
+
+    static void labeled_error(Point point) {
+        label:
+            Point(var x, var y) = point;
+    }
+
     sealed interface IPoint permits Point {}
     record Point(Integer x, Integer y) implements IPoint { }
     record OPoint(Object x, Object y) { }
