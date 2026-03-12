@@ -2424,6 +2424,7 @@ public class Types {
         public boolean isNR1S(Type t, Type s) {
             if (!(t.tsym instanceof ClassSymbol tsm)
                     || !tsm.isSealed()
+                    || (!tsm.isInterface() && !tsm.isAbstract())
                     || tsm.getPermittedSubclasses().size() != 1
                     || !(s.tsym instanceof ClassSymbol ssm)
                     || !ssm.isFinal()) {
