@@ -1,10 +1,10 @@
 /*
  * @test /nodynamiccopyright/
  * @summary Ensure non-NR1S assignments stay rejected in all modes
- * @compile/fail/ref=AssignmentNR1SRegressionErrors.out -XDrawDiagnostics AssignmentNR1SRegressionErrors.java
- * @compile/fail/ref=AssignmentNR1SRegressionErrors.out --enable-preview --source ${jdk.version} -XDrawDiagnostics AssignmentNR1SRegressionErrors.java
+ * @compile/fail/ref=EnhancedVariableDeclAssignmentNR1SRegressionErrors.out -XDrawDiagnostics EnhancedVariableDeclAssignmentNR1SRegressionErrors.java
+ * @compile/fail/ref=EnhancedVariableDeclAssignmentNR1SRegressionErrors.out --enable-preview --source ${jdk.version} -XDrawDiagnostics EnhancedVariableDeclAssignmentNR1SRegressionErrors.java
  */
-public class AssignmentNR1SRegressionErrors {
+public class EnhancedVariableDeclAssignmentNR1SRegressionErrors {
     static sealed abstract class SA2<T> permits SB2 {}
     static final class SB2<T> extends SA2<T> {}
     static void rejectMismatchedGenericArguments() {

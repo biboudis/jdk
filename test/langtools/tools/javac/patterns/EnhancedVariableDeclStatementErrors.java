@@ -1,6 +1,6 @@
 /*
  * @test /nodynamiccopyright/
- * @summary
+ * @summary Verify errors for enhanced variable declaration statements
  * @enablePreview
  * @compile/fail/ref=EnhancedVariableDeclStatementErrors.out -XDrawDiagnostics -XDshould-stop.at=FLOW EnhancedVariableDeclStatementErrors.java
  */

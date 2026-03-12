@@ -1,12 +1,12 @@
 /*
  * @test /nodynamiccopyright/
- * @summary
+ * @summary Verify errors for enhanced variable declarations in enhanced for loops
  * @enablePreview
- * @compile/fail/ref=EnhancedLocalVariableDeclInEnhancedForErrors.out -XDrawDiagnostics -XDshould-stop.at=FLOW EnhancedLocalVariableDeclInEnhancedForErrors.java
+ * @compile/fail/ref=EnhancedVariableDeclInEnhancedForErrors.out -XDrawDiagnostics -XDshould-stop.at=FLOW EnhancedVariableDeclInEnhancedForErrors.java
  */
 import java.util.List;
 
-public class EnhancedLocalVariableDeclInEnhancedForErrors {
+public class EnhancedVariableDeclInEnhancedForErrors {
 
     static void exhaustivity_error1(List<Object> points) {
         for (Point(var x, var y): points) {

@@ -1,6 +1,0 @@
-AssignmentNR1SRegressionErrors.java:12:26: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.SA2<java.lang.Integer>, AssignmentNR1SRegressionErrors.SB2<java.lang.String>)
-AssignmentNR1SRegressionErrors.java:20:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.SI, AssignmentNR1SRegressionErrors.Leaf)
-AssignmentNR1SRegressionErrors.java:27:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.ConcreteSA, AssignmentNR1SRegressionErrors.ConcreteSB)
-AssignmentNR1SRegressionErrors.java:35:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.MultiSA, AssignmentNR1SRegressionErrors.MultiSB1)
-AssignmentNR1SRegressionErrors.java:43:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: AssignmentNR1SRegressionErrors.MultiSI, AssignmentNR1SRegressionErrors.MultiImpl1)
-5 errors

@@ -1,6 +1,6 @@
 /*
  * @test /nodynamiccopyright/
- * @summary
+ * @summary Verify enhanced variable declaration statements
  * @enablePreview
  * @compile EnhancedVariableDeclStatementTest.java
  * @run main EnhancedVariableDeclStatementTest

@@ -1,14 +1,14 @@
 /*
  * @test /nodynamiccopyright/
- * @summary
- * @compile/fail/ref=AssignmentNR1SNoPreview.out -XDrawDiagnostics AssignmentNR1S.java
- * @compile/ref=AssignmentNR1S.preview.out -XDrawDiagnostics -Xlint:preview --enable-preview --source ${jdk.version} AssignmentNR1S.java
- * @run main/othervm --enable-preview AssignmentNR1S
+ * @summary Verify preview NR1S assignment conversions
+ * @compile/fail/ref=EnhancedVariableDeclAssignmentNR1SNoPreview.out -XDrawDiagnostics EnhancedVariableDeclAssignmentNR1S.java
+ * @compile/ref=EnhancedVariableDeclAssignmentNR1S.preview.out -XDrawDiagnostics -Xlint:preview --enable-preview --source ${jdk.version} EnhancedVariableDeclAssignmentNR1S.java
+ * @run main/othervm --enable-preview EnhancedVariableDeclAssignmentNR1S
  */
 import java.util.Objects;
 import java.util.List;
 
-public class AssignmentNR1S {
+public class EnhancedVariableDeclAssignmentNR1S {
     public static void main(String[] args) {
         assignmentFromSealedSupertype();
         arrayStoreFromSealedSupertype();

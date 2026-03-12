@@ -1,6 +1,6 @@
 /*
  * @test /nodynamiccopyright/
- * @summary
+ * @summary Verify enhanced for declarations with all analyzers enabled
  * @enablePreview
  * @compile -XDfind=all EnhancedVariableDeclInEnhancedForTestAllAnalyzers.java
  */
