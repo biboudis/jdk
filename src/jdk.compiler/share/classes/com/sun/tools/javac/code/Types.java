@@ -102,6 +102,7 @@ public class Types {
 
     public final Warner noWarnings;
     public final boolean dumpStacktraceOnError;
+    private final Preview preview;
     private final boolean allowEnhancedVariableDecls;
 
     // <editor-fold defaultstate="collapsed" desc="Instantiating">
@@ -118,7 +119,7 @@ public class Types {
         syms = Symtab.instance(context);
         names = Names.instance(context);
         Source source = Source.instance(context);
-        Preview preview = Preview.instance(context);
+        preview = Preview.instance(context);
         chk = Check.instance(context);
         enter = Enter.instance(context);
         capturedName = names.fromString("<captured wildcard>");
@@ -2413,11 +2414,16 @@ public class Types {
                 break;
             }
         }
-        if (allowEnhancedVariableDecls && isNR1S(t, s)) {
+
+        if (isConvertible(t, s, warn)) {
             return true;
-        }
-        else {
-            return isConvertible(t, s, warn);
+        } else if (allowEnhancedVariableDecls && isNR1S(t, s)){
+            if (warn.pos() != null) {
+                preview.warnPreview(warn.pos(), Feature.ENHANCED_VARIABLE_DECLS);
+            }
+            return true;
+        } else {
+            return false;
         }
     }
     // where

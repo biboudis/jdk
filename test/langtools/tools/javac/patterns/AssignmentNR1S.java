@@ -2,7 +2,7 @@
  * @test /nodynamiccopyright/
  * @summary
  * @compile/fail/ref=AssignmentNR1SNoPreview.out -XDrawDiagnostics AssignmentNR1S.java
- * @compile --enable-preview --source ${jdk.version} AssignmentNR1S.java
+ * @compile/ref=AssignmentNR1S.preview.out -XDrawDiagnostics -Xlint:preview --enable-preview --source ${jdk.version} AssignmentNR1S.java
  * @run main/othervm --enable-preview AssignmentNR1S
  */
 import java.util.Objects;

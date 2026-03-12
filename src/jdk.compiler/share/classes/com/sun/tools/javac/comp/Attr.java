@@ -1323,10 +1323,6 @@ public class Attr extends JCTree.Visitor {
                 if (tree.isImplicitlyTyped()) {
                     setupImplicitlyTypedVariable(tree, v.type);
                 }
-
-                if (types.isNR1S(tree.init.type, v.type)) {
-                    preview.checkSourceLevel(tree.init.pos(), Feature.ENHANCED_VARIABLE_DECLS);
-                }
             }
             result = tree.type = v.type;
             if (env.enclClass.sym.isRecord() && tree.sym.owner.kind == TYP && !v.isStatic()) {
