@@ -1180,17 +1180,19 @@ public class TransPatterns extends TreeTranslator {
         bindingContext = new BasicBindingContext();
         try {
             JCExpression expr = translate(tree.expr);
+            Type tempType = expr.type.hasTag(BOT) ? syms.objectType : expr.type;
 
             // synthetic temp to hold RHS
             VarSymbol letBoundCandidate = new VarSymbol(Flags.FINAL | Flags.SYNTHETIC,
                     names.fromString("match" + tree.pos + target.syntheticNameChar() + "temp"),
-                    expr.type,
+                    tempType,
                     currentMethodSym);
             JCStatement letBoundCandidateRef =
-                    make.at(tree.pos).VarDef(letBoundCandidate, expr).setType(expr.type);
+                    make.at(tree.pos).VarDef(letBoundCandidate, expr).setType(tempType);
+            JCExpression letBoundCandidateIdent = make.Ident(letBoundCandidate).setType(tempType);
 
             // npe logic
-            JCIf ifNPEstatement = make.If(makeBinary(Tag.EQ, make.Ident(letBoundCandidate).setType(expr.type), makeNull()).setType(syms.booleanType),
+            JCIf ifNPEstatement = make.If(makeBinary(Tag.EQ, letBoundCandidateIdent, makeNull()).setType(syms.booleanType),
                     make.Throw(makeNewClass(syms.nullPointerExceptionType, List.of(makeNull()))),
                     null);
 
@@ -1198,7 +1200,7 @@ public class TransPatterns extends TreeTranslator {
             List<JCExpression> matchExParams = List.of(makeNull(), makeNull());
             JCTree.JCThrow thr = make.Throw(makeNewClass(syms.matchExceptionType, matchExParams));
 
-            JCInstanceOf instanceOfTree = make.TypeTest(make.Ident(letBoundCandidate).setType(expr.type), tree.pattern);
+            JCInstanceOf instanceOfTree = make.TypeTest(letBoundCandidateIdent, tree.pattern);
             tree.type = syms.booleanType;
 
             JCIf ifNode = make.If(makeUnary(Tag.NOT,

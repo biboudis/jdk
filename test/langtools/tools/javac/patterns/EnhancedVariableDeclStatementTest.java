@@ -15,6 +15,7 @@ public class EnhancedVariableDeclStatementTest {
         basicTest();
         targetTypingTest();
         scopeAndShadowingTest();
+        assertEx(EnhancedVariableDeclStatementTest::nullLiteralTopLevelTest, NullPointerException.class);
         assertMatchExceptionWithNested(EnhancedVariableDeclStatementTest::raiseExceptionTest, TestPatternFailed.class);
     }
 
@@ -40,6 +41,11 @@ public class EnhancedVariableDeclStatementTest {
         PointEx pointEx = new PointEx(1, 2);
         PointEx(Integer a_ex, Integer b_noex) = pointEx;
         return a_ex;
+    }
+
+    static Integer nullLiteralTopLevelTest() {
+        Point(Integer x, Integer y) = null;
+        return x;
     }
 
     static void scopeAndShadowingTest() {
