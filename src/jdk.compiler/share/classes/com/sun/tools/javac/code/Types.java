@@ -2419,7 +2419,7 @@ public class Types {
             return true;
         } else if (allowEnhancedVariableDecls && isNR1S(t, s)){
             if (warn.pos() != null) {
-                preview.warnPreview(warn.pos(), Feature.ENHANCED_VARIABLE_DECLS);
+                preview.warnPreview(JCDiagnostic.DiagnosticFlag.SYNTAX, warn.pos(), Feature.ENHANCED_VARIABLE_DECLS);
             }
             return true;
         } else {
