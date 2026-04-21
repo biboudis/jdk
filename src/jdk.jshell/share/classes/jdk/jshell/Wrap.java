@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Collectors.joining;
 import static jdk.jshell.Util.DOIT_METHOD_NAME;
-
+import static jdk.jshell.ExpressionToTypeInfo.BindingInfo;
 /**
  * Wrapping of source into Java methods, fields, etc.  All but outer layer
  * wrapping with imports and class.
@@ -191,7 +191,7 @@ abstract class Wrap implements GeneralWrap {
         // public static Type bindingName;
         for (var b : bindings) {
             members.add(new CompoundWrap(
-                    "     public static\n    ", b.declareType(), " ", b.name(), ";\n"
+                    "     public static\n    ", b.declareTypeName(), " ", b.bindingName(), ";\n"
             ));
         }
 
@@ -202,8 +202,8 @@ abstract class Wrap implements GeneralWrap {
             String methodName = setBindingMethodName + "$" + i;
             methodsForAssigningBindings.add(methodName);
             members.add(new CompoundWrap(
-                    "   private static ", bi.declareType(), " ", methodName, "(", bi.declareType(), " $v", ") { \n",
-                         "        return ", bi.name(), " = $v", ";\n",
+                    "   private static ", bi.declareTypeName(), " ", methodName, "(", bi.declareTypeName(), " $v", ") { \n",
+                         "        return ", bi.bindingName(), " = $v", ";\n",
                          "}\n"));
         }
 
@@ -218,10 +218,10 @@ abstract class Wrap implements GeneralWrap {
         setBindingMethodInvocations.add(semi(statement));
         for (int i = 1; i < bindings.size(); i++) {
             setBindingMethodInvocations.add(new CompoundWrap(
-                    "    ", methodsForAssigningBindings.get(i), "(", bindings.get(i).name(), ");\n"));
+                    "    ", methodsForAssigningBindings.get(i), "(", bindings.get(i).bindingName(), ");\n"));
         }
         setBindingMethodInvocations.add(new CompoundWrap(
-                "  return  ", methodsForAssigningBindings.getFirst(), "(", bindings.getFirst().name(), ");\n"));
+                "  return  ", methodsForAssigningBindings.getFirst(), "(", bindings.getFirst().bindingName(), ");\n"));
 
         members.add(new DoitMethodWrap(new CompoundWrap(setBindingMethodInvocations.toArray())));
 

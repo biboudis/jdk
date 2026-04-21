@@ -136,6 +136,22 @@ public class EnhancedVariableDeclarationsTest extends KullaTesting {
         assertDeclareFail("final Point(int x) = p;", "compiler.err.final.in.enhanced.declarations.not.allowed");
     }
 
+    @Test
+    public void testInferredFlat() {
+        assertEval("record Point(int a, int b) {}");
+        assertEval("Point p = new Point(1, 2);");
+        assertEval("Point(var x, var y) = p;");
+    }
+
+    @Test
+    public void testInferredMultipleComponentsNested() {
+        assertEval("record Point(int a, int b) {}");
+        assertEval("record NumberedPoint(Point p, int n) {}");
+        assertEquals(varKey(assertEval("NumberedPoint p = new NumberedPoint(new Point(1, 2), 97);")).name(), "p");
+        assertEval("NumberedPoint(Point(var x, var y), var serialNumber) = p;");
+        assertEval("x + y + serialNumber", "100");
+    }
+
     @BeforeEach
     public void setUp() {
         super.setUp(bc -> bc.compilerOptions("--source", System.getProperty("java.specification.version"), "--enable-preview").remoteVMOptions("--enable-preview"));

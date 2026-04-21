@@ -40,7 +40,6 @@ import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.EnhancedVariableDeclTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ModifiersTree;
 import com.sun.source.tree.NewClassTree;
@@ -90,6 +89,7 @@ import static jdk.jshell.Snippet.SubKind.SINGLE_TYPE_IMPORT_SUBKIND;
 import static jdk.jshell.Snippet.SubKind.SINGLE_STATIC_IMPORT_SUBKIND;
 import static jdk.jshell.Snippet.SubKind.TYPE_IMPORT_ON_DEMAND_SUBKIND;
 import static jdk.jshell.Snippet.SubKind.STATIC_IMPORT_ON_DEMAND_SUBKIND;
+import static jdk.jshell.ExpressionToTypeInfo.BindingInfo;
 
 /**
  * The Evaluation Engine. Source internal analysis, wrapping control,
@@ -282,7 +282,7 @@ class Eval {
                 bindings.add(new BindingInfo(bindingName, EvalPretty.prettyExpr((JCTree) bindingTypeTree, false)));
             }
         } else {
-            // TODO
+            bindings = ExpressionToTypeInfo.enhancedLocalVariableDeclInferBindings(userSource, state, false);
         }
 
         Wrap guts = Wrap.enhancedLocalVariableDeclWrap(compileSource, bindings);
@@ -295,16 +295,19 @@ class Eval {
 
         BindingInfo primary = bindings.getFirst();
         Set<String> additionalStaticImportNames =
-                bindings.stream().skip(1).map(BindingInfo::name).collect(Collectors.toSet());
+                bindings.stream().skip(1).map(BindingInfo::bindingName).collect(Collectors.toSet());
 
         Snippet snip = new VarSnippet(
-                state.keyMap.keyForVariable((primary.name())),
+                state.keyMap.keyForVariable((primary.bindingName())),
                 userSource,
                 guts,
-                primary.name(), primary.name(),
+                primary.bindingName(),
+                primary.bindingName(),
                 SubKind.VAR_DECLARATION_WITH_INITIALIZER_SUBKIND,
-                primary.displayType(), primary.hasEnhancedType() ? primary.fullType():null,
-                additionalStaticImportNames, tds.declareReferences(), null);
+                primary.displayTypeName(),
+                primary.hasEnhancedType() ? primary.fullTypeName() : null,
+                additionalStaticImportNames,
+                tds.declareReferences(), null);
 
         return singletonList(snip);
     }
