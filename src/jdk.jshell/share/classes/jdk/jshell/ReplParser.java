@@ -189,7 +189,10 @@ class ReplParser extends JavacParser {
                     int pos = token.pos;
 
                     if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl) {
-                        return List.<JCTree>of(parseStatement());
+                        if (hasDisallowedModifiers(mods)) {
+                            return parseEnhancedLocalVariableDecl(pos, mods);
+                        }
+                        return parseEnhancedLocalVariableDecl(pos);
                     }
 
                     List<JCTypeParameter> typarams = typeParametersOpt();

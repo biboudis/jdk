@@ -2924,6 +2924,8 @@ public class JavacParser implements Parser {
             JCModifiers mods = modifiersOpt();
             if (isDeclaration()) {
                 return List.of(classOrRecordOrInterfaceOrEnumDeclaration(mods, dc));
+            } else if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl) {
+                return parseEnhancedLocalVariableDecl(pos, mods);
             } else {
                 JCExpression t = parseType(true);
                 return localVariableDeclarations(mods, t, dc);
@@ -3016,18 +3018,7 @@ public class JavacParser implements Parser {
         if (isRecordStart() && allowRecords) {
             return List.of(recordDeclaration(F.at(pos).Modifiers(0), dc));
         } else if (analyzeLocalVariableDeclaration() == VariableDeclKind.EnhancedLocalVarDecl) {
-            int patternPos = token.pos;
-            checkSourceLevel(patternPos, Feature.ENHANCED_VARIABLE_DECLS);
-            JCModifiers mods = optFinal(0);
-            JCExpression type = unannotatedType(false);
-
-            JCPattern pattern = parsePattern(patternPos, mods, type, false, false);
-
-            accept(EQ);
-            JCExpression expr = parseExpression();
-            accept(SEMI);
-
-            return List.of(toP(F.at(pos).EnhancedVarDef(pattern, expr)));
+            return parseEnhancedLocalVariableDecl(pos);
         } else {
             Token prevToken = token;
             JCExpression t = term(EXPR | TYPE);
@@ -3278,9 +3269,14 @@ public class JavacParser implements Parser {
                     // "?" only allowed in a type parameter position - otherwise it's an expression
                     if (typeParameterPossibleStart == lookahead - 1) break;
                     else return VariableDeclKind.LocalVarDecl;
+                case FINAL:
+                    if (lookahead == 0 || inType) {
+                        inType = true;
+                    }
+                    break;
                 case EXTENDS: case SUPER: case AMP:
                 case GTGTGT: case GTGT: case GT:
-                case FINAL: case ELLIPSIS:
+                case ELLIPSIS:
                     break;
                 case BYTE: case SHORT: case INT: case LONG: case FLOAT:
                 case DOUBLE: case BOOLEAN: case CHAR: case VOID:
@@ -3327,6 +3323,9 @@ public class JavacParser implements Parser {
                 case MONKEYS_AT: {
                     int prevLookahead = lookahead;
                     lookahead = skipAnnotation(lookahead);
+                    if (prevLookahead == 0 || inType) {
+                        inType = true;
+                    }
                     if (typeParameterPossibleStart == prevLookahead - 1) {
                         // move possible start of type param after the anno
                         typeParameterPossibleStart = lookahead;
@@ -3357,6 +3356,39 @@ public class JavacParser implements Parser {
                     return VariableDeclKind.LocalVarDecl;
             }
         }
+    }
+
+    public List<JCStatement> parseEnhancedLocalVariableDecl(int pos) {
+        return parseEnhancedLocalVariableDecl(pos, optFinal(0));
+    }
+
+    protected boolean hasDisallowedModifiers(JCModifiers mods) {
+        return mods != null
+                && (mods.annotations.nonEmpty() || (mods.flags & Flags.FINAL) != 0);
+    }
+
+    public List<JCStatement> parseEnhancedLocalVariableDecl(int pos, JCModifiers mods) {
+        int patternPos = mods != null && mods.pos != Position.NOPOS
+                ? mods.pos
+                : token.pos;
+        checkSourceLevel(pos, Feature.ENHANCED_VARIABLE_DECLS);
+        if (hasDisallowedModifiers(mods)) {
+            if (mods.annotations.nonEmpty()) {
+                log.error(mods.annotations.head.pos(),
+                        Errors.AnnotationsInEnhancedDeclarationsNotAllowed);
+            } else {
+                log.error(mods.pos, Errors.FinalInEnhancedDeclarationsNotAllowed);
+            }
+            mods = F.at(Position.NOPOS).Modifiers(0);
+        }
+        JCExpression type = unannotatedType(false);
+        JCPattern pattern = parsePattern(patternPos, mods, type, false, false);
+
+        accept(EQ);
+        JCExpression expr = parseExpression();
+        accept(SEMI);
+
+        return List.of(toP(F.at(pos).EnhancedVarDef(pattern, expr)));
     }
 
     @Override

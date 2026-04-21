@@ -184,6 +184,50 @@ abstract class Wrap implements GeneralWrap {
         return cnt;
     }
 
+    public static Wrap enhancedLocalVariableDeclWrap(String compileSource, List<BindingInfo> bindings) {
+        List<Wrap> members = new ArrayList<>();
+        List<String> methodsForAssigningBindings = new ArrayList<>(bindings.size());
+
+        // public static Type bindingName;
+        for (var b : bindings) {
+            members.add(new CompoundWrap(
+                    "     public static\n    ", b.declareType(), " ", b.name(), ";\n"
+            ));
+        }
+
+        // public static Type $setBindingMethodName(Type $v) { return bindingName = $v; }
+        String setBindingMethodName = "$setBindingMethodName";
+        for (int i = 0; i < bindings.size(); i++) {
+            BindingInfo bi = bindings.get(i);
+            String methodName = setBindingMethodName + "$" + i;
+            methodsForAssigningBindings.add(methodName);
+            members.add(new CompoundWrap(
+                    "   private static ", bi.declareType(), " ", methodName, "(", bi.declareType(), " $v", ") { \n",
+                         "        return ", bi.name(), " = $v", ";\n",
+                         "}\n"));
+        }
+
+        // public static Object do_it$() throws Throwable {
+        //   Point(int x, int y) = getPoint();            // what user wrote
+        //   $setBindingMethodName$1(y);                  // the second binding is update for the latter 2 .. n
+        //   return $setBindingMethodName$0(x);           // the first binding is updated and returned
+        // }
+        Wrap statement = new NoWrap(compileSource);
+        List<Object> setBindingMethodInvocations = new ArrayList<>();
+        setBindingMethodInvocations.add(statement);
+        setBindingMethodInvocations.add(semi(statement));
+        for (int i = 1; i < bindings.size(); i++) {
+            setBindingMethodInvocations.add(new CompoundWrap(
+                    "    ", methodsForAssigningBindings.get(i), "(", bindings.get(i).name(), ");\n"));
+        }
+        setBindingMethodInvocations.add(new CompoundWrap(
+                "  return  ", methodsForAssigningBindings.getFirst(), "(", bindings.getFirst().name(), ");\n"));
+
+        members.add(new DoitMethodWrap(new CompoundWrap(setBindingMethodInvocations.toArray())));
+
+        return new CompoundWrap(members.toArray());
+    }
+
     public static final class Range {
         final int begin;
         final int end; // exclusive
