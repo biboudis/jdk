@@ -6,4 +6,9 @@ EnhancedVariableDeclAssignmentNR1S.java:50:17: compiler.err.prob.found.req: (com
 EnhancedVariableDeclAssignmentNR1S.java:58:14: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.IFoo, EnhancedVariableDeclAssignmentNR1S.FooImpl)
 EnhancedVariableDeclAssignmentNR1S.java:64:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.IFoo, EnhancedVariableDeclAssignmentNR1S.FooImpl)
 EnhancedVariableDeclAssignmentNR1S.java:71:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.SA1, EnhancedVariableDeclAssignmentNR1S.SB1)
-8 errors
+EnhancedVariableDeclAssignmentNR1S.java:78:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.I, EnhancedVariableDeclAssignmentNR1S.Mid)
+EnhancedVariableDeclAssignmentNR1S.java:92:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.Base, EnhancedVariableDeclAssignmentNR1S.Value)
+EnhancedVariableDeclAssignmentNR1S.java:105:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.GI1<java.lang.String>, EnhancedVariableDeclAssignmentNR1S.GA1)
+EnhancedVariableDeclAssignmentNR1S.java:119:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.GI2<java.lang.String>, EnhancedVariableDeclAssignmentNR1S.GMid2<?>)
+EnhancedVariableDeclAssignmentNR1S.java:132:15: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1S.II<java.lang.Long>, EnhancedVariableDeclAssignmentNR1S.J)
+13 errors

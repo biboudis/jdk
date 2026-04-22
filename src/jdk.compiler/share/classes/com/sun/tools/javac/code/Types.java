@@ -47,10 +47,12 @@ import com.sun.tools.javac.code.Type.UndetVar.InferenceBound;
 import com.sun.tools.javac.code.TypeMetadata.Annotations;
 import com.sun.tools.javac.comp.AttrContext;
 import com.sun.tools.javac.comp.Check;
+import com.sun.tools.javac.comp.Infer;
 import com.sun.tools.javac.comp.Enter;
 import com.sun.tools.javac.comp.Env;
 import com.sun.tools.javac.jvm.ClassFile;
 import com.sun.tools.javac.code.Source.Feature;
+import com.sun.tools.javac.resources.CompilerProperties;
 import com.sun.tools.javac.util.*;
 
 import static com.sun.tools.javac.code.BoundKind.*;
@@ -96,6 +98,7 @@ public class Types {
     final Names names;
     final Check chk;
     final Enter enter;
+    final Infer infer;
     JCDiagnostic.Factory diags;
     List<Warner> warnStack = List.nil();
     final Name capturedName;
@@ -122,6 +125,7 @@ public class Types {
         preview = Preview.instance(context);
         chk = Check.instance(context);
         enter = Enter.instance(context);
+        infer = Infer.instance(context);
         capturedName = names.fromString("<captured wildcard>");
         messages = JavacMessages.instance(context);
         diags = JCDiagnostic.Factory.instance(context);
@@ -2427,26 +2431,84 @@ public class Types {
         }
     }
     // where
+        // isNR1S answers the question "Do all runtime values of t belong to the target type s?"
         public boolean isNR1S(Type t, Type s) {
             if (!(t.tsym instanceof ClassSymbol tsm)
                     || !tsm.isSealed()
                     || (!tsm.isInterface() && !tsm.isAbstract())
-                    || tsm.getPermittedSubclasses().size() != 1
-                    || !(s.tsym instanceof ClassSymbol ssm)
-                    || !ssm.isFinal()) {
+                    || s.isPrimitive()) {
                 return false;
             }
 
-            // Ensure s is exactly the unique permitted subtype, not just any transitive subtype.
-            Type permitted = tsm.getPermittedSubclasses().head;
-            if (permitted.tsym != s.tsym) {
-                return false;
+            // proceed into the calculation of a frontier of the hierarchy and mirrors the
+            // traversal in com.sun.tools.javac.comp.ExhaustivenessComputer.leafPermittedSubTypes
+            // (no need to return a set, a coverage check is specialized since we have one type only to check against).
+            // a sealed abstract class or sealed interface is not part of the frontier,
+            // these are always expanded through their permits clauses
+            ListBuffer<ClassSymbol> permittedSubtypesClosure = new ListBuffer<>();
+            Set<ClassSymbol> seen = new HashSet<>();
+            boolean hasFrontier = false;
+
+            permittedSubtypesClosure.append(tsm);
+
+            while (permittedSubtypesClosure.nonEmpty()) {
+                ClassSymbol current = permittedSubtypesClosure.next();
+                if (!seen.add(current)) {
+                    continue;
+                }
+
+                current.complete();
+
+                // Expand only through sealed interfaces and abstract sealed classes
+                // Every type where expansion stops is a frontier (e.g., final, non-sealed classes, concrete classes,
+                // records, etc.)
+                if (current.isSealed() && (current.isInterface() || current.isAbstract())) {
+                    for (Type permitted : current.getPermittedSubclasses()) {
+                        if (permitted.tsym instanceof ClassSymbol permittedSym &&
+                                applicableSubtype(t, permittedSym) != null) {
+                            permittedSubtypesClosure.append(permittedSym);
+                        }
+                    }
+                } else if (current != null) {
+                    Type currentAsT = applicableSubtype(t, current);
+                    if (currentAsT != null) {
+                        hasFrontier = true;
+                        if (!isSubtype(currentAsT, s)) {
+                            return false;
+                        }
+                    }
+                }
             }
 
-            // Compare instantiated supertype so generic arguments match.
-            Type sAsT = asSuper(s, tsm);
-            return sAsT != null && isSameType(sAsT, t);
+            return hasFrontier && checkSafeCast(t, s);
         }
+
+    private Type applicableSubtype(Type sourceType, ClassSymbol csym) {
+        Type instantiated = csym.type.allparams().isEmpty()
+                ? csym.type
+                : infer.instantiatePatternType(sourceType, csym);
+
+        return instantiated != null && isCastable(sourceType, instantiated)
+                ? instantiated
+                : null;
+    }
+    private boolean checkSafeCast(Type t, Type s) {
+        Warner warner = new Warner();
+        if (t.isErroneous() || s.isErroneous()) {
+            return false;
+        }
+        if (!isCastable(t, s, warner)) {
+            return false;
+        } else if ((t.isPrimitive() || s.isPrimitive()) &&
+                (!t.isPrimitive() || !s.isPrimitive() || !isSameType(t, s))) {
+            return true;
+        } else if (warner.hasLint(LintCategory.UNCHECKED)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="erasure">

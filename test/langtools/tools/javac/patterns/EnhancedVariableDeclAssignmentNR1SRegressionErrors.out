@@ -3,4 +3,8 @@ EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:20:21: compiler.err.prob
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:27:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.ConcreteSA, EnhancedVariableDeclAssignmentNR1SRegressionErrors.ConcreteSB)
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:35:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.MultiSA, EnhancedVariableDeclAssignmentNR1SRegressionErrors.MultiSB1)
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:43:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.MultiSI, EnhancedVariableDeclAssignmentNR1SRegressionErrors.MultiImpl1)
-5 errors
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:51:15: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.I<java.lang.Long>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.A)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:61:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.E, EnhancedVariableDeclAssignmentNR1SRegressionErrors.B1)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:69:15: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.II<java.lang.Long>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.J)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:77:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.III<java.lang.String>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.JG<java.lang.String>)
+9 errors
