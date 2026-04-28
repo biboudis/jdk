@@ -52,7 +52,6 @@ import com.sun.tools.javac.comp.Enter;
 import com.sun.tools.javac.comp.Env;
 import com.sun.tools.javac.jvm.ClassFile;
 import com.sun.tools.javac.code.Source.Feature;
-import com.sun.tools.javac.resources.CompilerProperties;
 import com.sun.tools.javac.util.*;
 
 import static com.sun.tools.javac.code.BoundKind.*;
@@ -2421,7 +2420,7 @@ public class Types {
 
         if (isConvertible(t, s, warn)) {
             return true;
-        } else if (allowEnhancedVariableDecls && isNR1S(t, s)){
+        } else if (allowEnhancedVariableDecls && isSafeDirectSuperType(t, s)){
             if (warn.pos() != null) {
                 preview.warnPreview(JCDiagnostic.DiagnosticFlag.SYNTAX, warn.pos(), Feature.ENHANCED_VARIABLE_DECLS);
             }
@@ -2430,84 +2429,77 @@ public class Types {
             return false;
         }
     }
-    // where
-        // isNR1S answers the question "Do all runtime values of t belong to the target type s?"
-        public boolean isNR1S(Type t, Type s) {
-            if (!(t.tsym instanceof ClassSymbol tsm)
-                    || !tsm.isSealed()
-                    || (!tsm.isInterface() && !tsm.isAbstract())
-                    || s.isPrimitive()) {
+
+    /**
+     * This method returns true if the narrowing reference conversion from {@code t}
+     * to {@code s} is unambiguously safe by repeatedly following a unique permitted
+     * subtype from {@code t}.
+     *
+     * The source type {@code t} must denote a sealed interface or an abstract
+     * sealed class. At each step, the current type must have exactly one permitted
+     * subtype. If that subtype is generic, it is instantiated against {@code t}; if
+     * instantiation fails, or if {@code t} is not castable to the instantiated
+     * subtype, the search fails.
+     */
+    public boolean isSafeDirectSuperType(Type t, Type s) {
+        if (!(t.tsym instanceof ClassSymbol current)
+                || !current.isSealed()
+                || (!current.isInterface() && !current.isAbstract())
+                || s.isPrimitive()) {
+            return false;
+        }
+
+        while (true) {
+            current.complete();
+
+            if (current.getPermittedSubclasses().size() != 1) {
                 return false;
             }
 
-            // proceed into the calculation of a frontier of the hierarchy and mirrors the
-            // traversal in com.sun.tools.javac.comp.ExhaustivenessComputer.leafPermittedSubTypes
-            // (no need to return a set, a coverage check is specialized since we have one type only to check against).
-            // a sealed abstract class or sealed interface is not part of the frontier,
-            // these are always expanded through their permits clauses
-            ListBuffer<ClassSymbol> permittedSubtypesClosure = new ListBuffer<>();
-            Set<ClassSymbol> seen = new HashSet<>();
-            boolean hasFrontier = false;
-
-            permittedSubtypesClosure.append(tsm);
-
-            while (permittedSubtypesClosure.nonEmpty()) {
-                ClassSymbol current = permittedSubtypesClosure.next();
-                if (!seen.add(current)) {
-                    continue;
-                }
-
-                current.complete();
-
-                // Expand only through sealed interfaces and abstract sealed classes
-                // Every type where expansion stops is a frontier (e.g., final, non-sealed classes, concrete classes,
-                // records, etc.)
-                if (current.isSealed() && (current.isInterface() || current.isAbstract())) {
-                    for (Type permitted : current.getPermittedSubclasses()) {
-                        if (permitted.tsym instanceof ClassSymbol permittedSym &&
-                                applicableSubtype(t, permittedSym) != null) {
-                            permittedSubtypesClosure.append(permittedSym);
-                        }
-                    }
-                } else if (current != null) {
-                    Type currentAsT = applicableSubtype(t, current);
-                    if (currentAsT != null) {
-                        hasFrontier = true;
-                        if (!isSubtype(currentAsT, s)) {
-                            return false;
-                        }
-                    }
-                }
+            Type permitted = current.getPermittedSubclasses().getFirst();
+            if (!(permitted.tsym instanceof ClassSymbol permittedSym)) {
+                return false;
             }
 
-            return hasFrontier && checkSafeCast(t, s);
-        }
+            Type instantiated = permittedSym.type.allparams().isEmpty()
+                    ? permittedSym.type
+                    : infer.instantiatePatternType(t, permittedSym);
 
-    private Type applicableSubtype(Type sourceType, ClassSymbol csym) {
-        Type instantiated = csym.type.allparams().isEmpty()
-                ? csym.type
-                : infer.instantiatePatternType(sourceType, csym);
+            Type next = instantiated != null && isCastable(t, instantiated)
+                    ? instantiated
+                    : null;
+            if (next == null) {
+                return false;
+            }
 
-        return instantiated != null && isCastable(sourceType, instantiated)
-                ? instantiated
-                : null;
-    }
-    private boolean checkSafeCast(Type t, Type s) {
-        Warner warner = new Warner();
-        if (t.isErroneous() || s.isErroneous()) {
-            return false;
-        }
-        if (!isCastable(t, s, warner)) {
-            return false;
-        } else if ((t.isPrimitive() || s.isPrimitive()) &&
-                (!t.isPrimitive() || !s.isPrimitive() || !isSameType(t, s))) {
-            return true;
-        } else if (warner.hasLint(LintCategory.UNCHECKED)) {
-            return false;
-        } else {
-            return true;
+            if (next.tsym == s.tsym && isSubtype(next, s)) {
+                return checkSafeCast(t, s);
+            }
+
+            if (!(next.tsym instanceof ClassSymbol nextSym) || !nextSym.isSealed()) {
+                return false;
+            }
+
+            current = nextSym;
         }
     }
+        // where
+        private boolean checkSafeCast(Type t, Type s) {
+            Warner warner = new Warner();
+            if (t.isErroneous() || s.isErroneous()) {
+                return false;
+            }
+            if (!isCastable(t, s, warner)) {
+                return false;
+            } else if ((t.isPrimitive() || s.isPrimitive()) &&
+                    (!t.isPrimitive() || !s.isPrimitive() || !isSameType(t, s))) {
+                return true;
+            } else if (warner.hasLint(LintCategory.UNCHECKED)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
 
     // </editor-fold>
 

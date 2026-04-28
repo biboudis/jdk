@@ -83,61 +83,6 @@ public class EnhancedVariableDeclAssignmentNR1S {
         // };
     }
 
-    // taken from test/langtools/tools/javac/patterns/Exhaustiveness.java
-    sealed interface Base permits Special, Value {}
-    non-sealed interface Value extends Base {}
-    sealed interface Special extends Base permits SpecialValue {}
-    non-sealed interface SpecialValue extends Value, Special {}
-    static void nonSealed2(final Base base) {
-        Value value = base; // OK
-
-        // equivalent exhaustive switch
-        // int ret = switch (base) {
-        //     case Value value2 -> 0;
-        // };
-    }
-
-    static sealed interface GI1<T> permits GA1, GB1 {}
-    static final class GA1 implements GI1<String> {}
-    static final class GB1 implements GI1<Integer> {}
-
-    static void genericDirectLeafInterface(GI1<String> i) {
-        GA1 a = i; // OK
-
-        // equivalent exhaustive switch
-        // int x = switch (i) {
-        //     case GA1 a2 -> 0;
-        // };
-    }
-
-    static sealed interface GI2<T> permits GMid2, GOther2 {}
-    static non-sealed interface GMid2<T> extends GI2<T> {}
-    static final class GMid2String implements GMid2<String> {}
-    static final class GOther2 implements GI2<Integer> {}
-
-    static void genericNonSealedTarget(GI2<String> i) {
-        GMid2<?> m = i; // OK
-
-        // equivalent exhaustive switch
-        // int x = switch (i) {
-        //     case GMid2<?> m2 -> 0;
-        // };
-    }
-
-    interface J {}
-    static sealed interface II<T> permits A2, B2 {}
-    static final class A2 implements II<Long>, J {}
-    static final class B2 implements II<Long>, J {}
-    static void assignmentToCommonInterface(II<Long> i) {
-        J j = i;          // OK
-
-        // equivalent should be exhaustive switch
-        // int ret = switch (i) {
-        //     case J j2 -> 0;
-        // };
-    }
-
-
     static void assertEquals(Object expected, Object actual) {
         if (!Objects.equals(expected, actual)) {
             throw new AssertionError("Expected: " + expected + "," +

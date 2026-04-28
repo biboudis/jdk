@@ -140,7 +140,7 @@ public class TransTypes extends TreeTranslator {
         Type btarget = target.baseType();
         if (tree.type.isPrimitive() == target.isPrimitive()) {
             boolean assignable = types.isAssignable(tree.type, btarget, types.noWarnings);
-            if (allowEnhancedVariableDecls && types.isNR1S(tree.type, btarget)) {
+            if (allowEnhancedVariableDecls && types.isSafeDirectSuperType(tree.type, btarget)) {
                 assignable = false;
             }
             return assignable

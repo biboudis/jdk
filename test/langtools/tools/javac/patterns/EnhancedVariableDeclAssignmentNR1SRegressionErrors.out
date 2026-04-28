@@ -7,4 +7,9 @@ EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:51:15: compiler.err.prob
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:61:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.E, EnhancedVariableDeclAssignmentNR1SRegressionErrors.B1)
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:69:15: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.II<java.lang.Long>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.J)
 EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:77:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.III<java.lang.String>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.JG<java.lang.String>)
-9 errors
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:86:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.S, EnhancedVariableDeclAssignmentNR1SRegressionErrors.L1)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:96:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.Base, EnhancedVariableDeclAssignmentNR1SRegressionErrors.Value)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:108:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.GI1<java.lang.String>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.GA1)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:121:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.GI2<java.lang.String>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.GMid2<?>)
+EnhancedVariableDeclAssignmentNR1SRegressionErrors.java:134:17: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclAssignmentNR1SRegressionErrors.II<java.lang.Long>, EnhancedVariableDeclAssignmentNR1SRegressionErrors.JJJ)
+14 errors
