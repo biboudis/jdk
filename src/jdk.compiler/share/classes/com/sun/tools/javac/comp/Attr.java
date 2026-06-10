@@ -1565,7 +1565,7 @@ public class Attr extends JCTree.Visitor {
     }
 
     public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        attribExpr(tree.expr, env);
+        attribExpr(tree.expr, env, patternTarget(tree.pattern));
         attribExpr(tree.pattern, env, tree.expr.type);
 
         matchBindings.bindingsWhenTrue.forEach(env.info.scope::enter);
@@ -4306,7 +4306,8 @@ public class Attr extends JCTree.Visitor {
             tree.record = syms.errSymbol;
             site = tree.type = types.createErrorType(tree.record.type);
         } else {
-            Type type = attribType(tree.deconstructor, env);
+            Type type = tree.deconstructor.type != null ?
+                    tree.deconstructor.type : attribType(tree.deconstructor, env);
             if (type.isRaw() && type.tsym.getTypeParameters().nonEmpty()) {
                 Type inferred = infer.instantiatePatternType(resultInfo.pt, type.tsym);
                 if (inferred == null) {
@@ -5647,6 +5648,22 @@ public class Attr extends JCTree.Visitor {
         } finally {
             chk.setLint(prevLint);
         }
+    }
+
+    private Type patternTarget(JCTree pattern) {
+        if (pattern instanceof JCRecordPattern record) {
+            if (record.deconstructor.hasTag(VARTYPE)) {
+                return Type.noType;
+            }
+            Type recordType = record.deconstructor.type != null ?
+                    record.deconstructor.type : attribType(record.deconstructor, env);
+            if (recordType.hasTag(ERROR) ||
+                    recordType.isRaw() && recordType.tsym.getTypeParameters().nonEmpty()) {
+                return Type.noType;
+            }
+            return recordType;
+        }
+        return Type.noType;
     }
 
     /** Finish the attribution of a class. */

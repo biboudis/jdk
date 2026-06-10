@@ -394,7 +394,8 @@ public class Infer {
             }
         }
         Type qtype = inferenceContext.asUndetVar(from);
-        Type to = resultInfo.pt;
+        Type to = resultCompatibilityTarget(mt.getReturnType(), resultInfo.pt,
+                inferenceContext, rsInfoInfContext);
 
         if (qtype.hasTag(VOID)) {
             to = syms.voidType;
@@ -414,6 +415,33 @@ public class Infer {
             throw error(diags.fragment(Fragments.InferNoConformingInstanceExists(inferenceContext.restvars(), mt.getReturnType(), to)));
         }
         return from;
+    }
+
+    /**
+     * Returns the target for invocation result constraints, lifting a proper
+     * target to the supertype corresponding to the generic return type. Targets
+     * free in an enclosing inference context are left unchanged.
+     */
+    private Type resultCompatibilityTarget(Type returnType, Type targetType,
+            InferenceContext inferenceContext, InferenceContext targetInferenceContext) {
+        if (returnType.hasTag(CLASS) &&
+                returnType.getTypeArguments().stream()
+                        .anyMatch(t -> t.containsAny(inferenceContext.inferencevars)) &&
+                !targetType.hasTag(NONE) &&
+                !targetType.hasTag(ERROR) &&
+                targetType.isReference() &&
+                !targetInferenceContext.free(targetType) &&
+                types.isSubtype(types.erasure(targetType), types.erasure(returnType))) {
+            Type liftedTarget = lift(targetType, returnType);
+            if (liftedTarget != null) {
+                return liftedTarget;
+            }
+        }
+        return targetType;
+    }
+
+    private Type lift(Type targetType, Type returnType) {
+        return types.asSuper(targetType, returnType.tsym);
     }
 
     private boolean needsEagerInstantiation(UndetVar from, Type to, InferenceContext inferenceContext) {

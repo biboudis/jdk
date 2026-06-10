@@ -165,9 +165,9 @@ public class EnhancedVariableDeclarationsTest extends KullaTesting {
         assertEval("interface IBox {}");
         assertEval("record BoxImpl(int x) implements IBox {}");
 
-        assertDeclareFail("Pair(var x, var y) = new Object();", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
+        assertDeclareFail("Pair(var x, var y) = new Object();", "compiler.err.prob.found.req");
         assertDeclareFail("Box(var value) = new Object();", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
-        assertDeclareFail("BoxImpl(var x) = (IBox) new BoxImpl(1);", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
+        assertDeclareFail("BoxImpl(var x) = (IBox) new BoxImpl(1);", "compiler.err.prob.found.req");
         assertDeclareFail("Holder(Point(var x)) = new Holder(new Point(1));", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
     }
 
