@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -295,7 +295,7 @@ class ExpressionToTypeInfo {
                     return null;
                 }
                 Tree firstStatement = TreeDissector.createByFirstClass(at).firstStatement();
-                if (firstStatement instanceof JCTree.JCEnhancedVariableDeclaration enhancedVariableDecl) {
+                if (firstStatement instanceof JCTree.JCVariableDecl enhancedVariableDecl && enhancedVariableDecl.isEnhancedDeclaration()) {
                     java.util.List<BindingInfo> ret = new ArrayList<BindingInfo>();
                     Eval.gatherBindings(enhancedVariableDecl.pattern, jcBindingPattern -> {
                         BindingInfo bindingInfo =
@@ -453,7 +453,7 @@ class ExpressionToTypeInfo {
         if (tp != null) {
             Tree tree = tp.getLeaf();
             boolean isExpression = tree instanceof ExpressionTree;
-            if (isExpression || tree.getKind() == Kind.VARIABLE) {
+            if (isExpression || tree instanceof VariableTree) {
                 ExpressionInfo ei = new ExpressionInfo();
                 if (isExpression)
                     ei.tree = (ExpressionTree) tree;
@@ -492,8 +492,8 @@ class ExpressionToTypeInfo {
                         }
                     }
                 }
-                if (tree.getKind() == Tree.Kind.VARIABLE && computeEnhancedInfo) {
-                    Tree init = ((VariableTree) tree).getInitializer();
+                if (tree instanceof VariableTree variable && computeEnhancedInfo) {
+                    Tree init = variable.getInitializer();
                     for (NewClassTree node : listAnonymousClassesToConvert(init)) {
                         Set<VariableElement> captured = capturedVariables(at,
                                                                           tp.getCompilationUnit(),

@@ -20,8 +20,24 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-sealed interface EnhancedVariableDeclSealedTypeChangesIntf
-        permits EnhancedVariableDeclSealedTypeChanges.A, EnhancedVariableDeclSealedTypeChangesClass {}
+/*
+ * @test
+ * @bug 8372170
+ * @summary Check this reference tracking for declarations with a record pattern
+ * @enablePreview
+ * @compile -Xlint:this-escape -Werror EnhancedVariableDeclThisEscapeAnalyzer.java
+ */
 
-final class EnhancedVariableDeclSealedTypeChangesClass
-        implements EnhancedVariableDeclSealedTypeChangesIntf {}
+public class EnhancedVariableDeclThisEscapeAnalyzer {
+    record Box<T>(T value) {}
+
+    @SuppressWarnings("unchecked")
+    private <T> T self() { return (T) this; }
+
+    public EnhancedVariableDeclThisEscapeAnalyzer() {
+        Box<?> ordinary = self();
+        Box<?>(var value) = self();
+        Box<?>(_) = self();
+        Box<?>(var _) = self();
+    }
+}

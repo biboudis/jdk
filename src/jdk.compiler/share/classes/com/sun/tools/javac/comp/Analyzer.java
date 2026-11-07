@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,9 +31,9 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.VariableTree;
@@ -49,6 +49,7 @@ import com.sun.tools.javac.comp.DeferredAttr.AttributionMode;
 import com.sun.tools.javac.resources.CompilerProperties.Warnings;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCBlock;
+import com.sun.tools.javac.tree.JCTree.JCAnnotatedType;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
 import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
@@ -59,6 +60,8 @@ import com.sun.tools.javac.tree.JCTree.JCLambda.ParameterKind;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCNewClass;
+import com.sun.tools.javac.tree.JCTree.JCPattern;
+import com.sun.tools.javac.tree.JCTree.JCRecordPattern;
 import com.sun.tools.javac.tree.JCTree.JCStatement;
 import com.sun.tools.javac.tree.JCTree.JCSwitch;
 import com.sun.tools.javac.tree.JCTree.JCTry;
@@ -91,6 +94,7 @@ import static com.sun.tools.javac.tree.JCTree.Tag.LABELLED;
 import static com.sun.tools.javac.tree.JCTree.Tag.METHODDEF;
 import static com.sun.tools.javac.tree.JCTree.Tag.NEWCLASS;
 import static com.sun.tools.javac.tree.JCTree.Tag.NULLCHK;
+import static com.sun.tools.javac.tree.JCTree.Tag.RECORDPATTERN;
 import static com.sun.tools.javac.tree.JCTree.Tag.TYPEAPPLY;
 import static com.sun.tools.javac.tree.JCTree.Tag.VARDEF;
 
@@ -145,6 +149,7 @@ public class Analyzer {
         DIAMOND("diamond"),
         LAMBDA("lambda"),
         METHOD("method"),
+        RECORD_PATTERN("recordpattern", Feature.RECORD_PATTERNS),
         LOCAL("local", Feature.LOCAL_VARIABLE_TYPE_INFERENCE);
 
         final String opt;
@@ -387,7 +392,8 @@ public class Analyzer {
     }
 
     /**
-     * This analyzer checks if a local variable declaration has redundant type.
+     * This analyzer checks if a local variable declaration without a record pattern
+     * has a redundant type.
      */
     class RedundantLocalVarTypeAnalyzer extends RedundantLocalVarTypeAnalyzerBase<JCVariableDecl> {
 
@@ -396,7 +402,7 @@ public class Analyzer {
         }
 
         boolean match(JCVariableDecl tree){
-            return tree.sym.owner.kind == Kind.MTH &&
+            return !tree.isEnhancedDeclaration() && tree.sym.owner.kind == Kind.MTH &&
                     tree.init != null && !tree.declaredUsingVar() &&
                     attr.canInferLocalVarType(tree) == null;
         }
@@ -411,7 +417,8 @@ public class Analyzer {
     }
 
     /**
-     * This analyzer checks if a for each variable declaration has redundant type.
+     * This analyzer checks if a declaration without a record pattern in an enhanced for header
+     * has a redundant type.
      */
     class RedundantLocalVarTypeAnalyzerForEach extends RedundantLocalVarTypeAnalyzerBase<JCEnhancedForLoop> {
 
@@ -421,23 +428,90 @@ public class Analyzer {
 
         @Override
         boolean match(JCEnhancedForLoop tree){
-            return tree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.VARIABLE &&
-                    !((JCVariableDecl) tree.varOrRecordPattern).declaredUsingVar();
+            return !tree.var.isEnhancedDeclaration() &&
+                    !tree.var.declaredUsingVar();
         }
         @Override
         List<JCEnhancedForLoop> rewrite(JCEnhancedForLoop oldTree) {
-            Assert.check(oldTree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.VARIABLE);
             JCEnhancedForLoop newTree = copier.copy(oldTree);
-            newTree.varOrRecordPattern = rewriteVarType((JCVariableDecl) oldTree.varOrRecordPattern);
+            newTree.var = rewriteVarType(oldTree.var);
             newTree.body = make.at(oldTree.body).Block(0, List.nil());
             return List.of(newTree);
         }
         @Override
         void process(JCEnhancedForLoop oldTree, JCEnhancedForLoop newTree, boolean hasErrors){
-            Assert.check(oldTree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.VARIABLE);
+            processVar(oldTree.var,
+                    newTree.var, hasErrors);
+        }
+    }
 
-            processVar((JCVariableDecl) oldTree.varOrRecordPattern,
-                    (JCVariableDecl) newTree.varOrRecordPattern, hasErrors);
+    /**
+     * This analyzer checks if record pattern type arguments are redundant.
+     */
+    class RedundantRecordPatternTypeArgAnalyzer
+            extends StatementAnalyzer<JCRecordPattern, JCRecordPattern> {
+        RedundantRecordPatternTypeArgAnalyzer() {
+            super(AnalyzerMode.RECORD_PATTERN, RECORDPATTERN);
+        }
+
+        @Override
+        boolean match(JCRecordPattern tree) {
+            return tree.deconstructor.hasTag(TYPEAPPLY) &&
+                    !containsTypeAnnotations(tree.deconstructor) &&
+                    !((JCTypeApply) tree.deconstructor).arguments.isEmpty() &&
+                    tree.type != null && !tree.type.isErroneous();
+        }
+
+        @Override
+        List<JCRecordPattern> rewrite(JCRecordPattern oldTree) {
+            JCRecordPattern replacement = copier.copy(oldTree);
+            replacement.deconstructor = ((JCTypeApply) replacement.deconstructor).clazz;
+            if (replacement.isEnhancedDeclaration()) {
+                replacement.declaration.vartype = replacement.deconstructor;
+            }
+            return List.of(replacement);
+        }
+
+        @Override
+        void process(JCRecordPattern oldTree, JCRecordPattern newTree, boolean hasErrors) {
+            if (!hasErrors && samePatternTypes(oldTree, newTree)) {
+                log.warning(oldTree.deconstructor, Warnings.RecordPatternRedundantTypeargs);
+            }
+        }
+
+        private boolean containsTypeAnnotations(JCTree tree) {
+            boolean[] found = {false};
+            new TreeScanner() {
+                @Override
+                public void visitAnnotatedType(JCAnnotatedType type) {
+                    found[0] = true;
+                }
+            }.scan(tree);
+            return found[0];
+        }
+
+        private boolean samePatternTypes(JCPattern oldTree, JCPattern newTree) {
+            if (oldTree.getTag() != newTree.getTag() ||
+                    oldTree.type == null || newTree.type == null ||
+                    oldTree.type.isErroneous() || newTree.type.isErroneous() ||
+                    !types.isSameType(types.upward(oldTree.type, types.captures(oldTree.type)),
+                            types.upward(newTree.type, types.captures(newTree.type)))) {
+                return false;
+            }
+            if (oldTree instanceof JCRecordPattern oldRecord &&
+                    newTree instanceof JCRecordPattern newRecord) {
+                List<JCPattern> oldNested = oldRecord.nested;
+                List<JCPattern> newNested = newRecord.nested;
+                while (oldNested.nonEmpty() && newNested.nonEmpty()) {
+                    if (!samePatternTypes(oldNested.head, newNested.head)) {
+                        return false;
+                    }
+                    oldNested = oldNested.tail;
+                    newNested = newNested.tail;
+                }
+                return oldNested.isEmpty() && newNested.isEmpty();
+            }
+            return true;
         }
     }
 
@@ -446,6 +520,7 @@ public class Analyzer {
             new DiamondInitializer(),
             new LambdaAnalyzer(),
             new RedundantTypeArgAnalyzer(),
+            new RedundantRecordPatternTypeArgAnalyzer(),
             new RedundantLocalVarTypeAnalyzer(),
             new RedundantLocalVarTypeAnalyzerForEach()
     };
@@ -599,6 +674,7 @@ public class Analyzer {
     class StatementScanner extends TreeScanner {
         /** Tree rewritings (generated by analyzers). */
         ListBuffer<RewritingContext> rewritings = new ListBuffer<>();
+        boolean isScanningEnhancedDeclarationPattern;
         JCTree originalTree;
         Env<AttrContext> env;
 
@@ -611,11 +687,22 @@ public class Analyzer {
             scan(originalTree);
         }
 
+        private void scanEnhancedDeclarationPattern(JCTree pattern) {
+            boolean previous = isScanningEnhancedDeclarationPattern;
+            isScanningEnhancedDeclarationPattern = true;
+            try {
+                scan(pattern);
+            } finally {
+                isScanningEnhancedDeclarationPattern = previous;
+            }
+        }
+
         @Override
         public void scan(JCTree tree) {
             if (tree != null) {
                 for (StatementAnalyzer<JCTree, JCTree> analyzer : analyzers) {
                     if (analyzer.isEnabled() &&
+                            (analyzer.mode != AnalyzerMode.RECORD_PATTERN || isScanningEnhancedDeclarationPattern) &&
                             tree.hasTag(analyzer.tag) &&
                             analyzer.match(tree)) {
                         for (JCTree t : analyzer.rewrite(tree)) {
@@ -669,9 +756,19 @@ public class Analyzer {
         }
 
         @Override
+        public void visitVarDef(JCVariableDecl tree) {
+            scan(tree.getType());
+            scanEnhancedDeclarationPattern(tree.pattern);
+            scan(tree.init);
+        }
+
+        @Override
         public void visitForeachLoop(JCEnhancedForLoop tree) {
             //skip body (to prevents same statements to be analyzed twice)
             scan(tree.getExpression());
+            if (analyzerModes.contains(AnalyzerMode.RECORD_PATTERN)) {
+                scanEnhancedDeclarationPattern(tree.var.pattern);
+            }
         }
 
         @Override
@@ -721,9 +818,15 @@ public class Analyzer {
             /*  this is a temporary workaround that should be removed once we have a truly independent
              *  clone operation
              */
-            if (originalTree.hasTag(VARDEF)) {
+            if (originalTree instanceof JCVariableDecl declaration) {
                 // avoid redefinition clashes
-                this.env.info.scope.remove(((JCVariableDecl)originalTree).sym);
+                this.env.info.scope.remove(declaration.sym);
+                new TreeScanner() {
+                    @Override
+                    public void visitBindingPattern(JCTree.JCBindingPattern binding) {
+                        RewritingContext.this.env.info.scope.remove(binding.var.sym);
+                    }
+                }.scan(declaration.pattern);
             }
         }
 

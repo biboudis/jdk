@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -137,7 +137,8 @@ public class TreeScanner extends Visitor {
 
     public void visitVarDef(JCVariableDecl tree) {
         scan(tree.mods);
-        scan(tree.vartype);
+        scan(tree.getType());
+        scan(tree.pattern);
         scan(tree.nameexpr);
         scan(tree.init);
     }
@@ -167,7 +168,7 @@ public class TreeScanner extends Visitor {
     }
 
     public void visitForeachLoop(JCEnhancedForLoop tree) {
-        scan(tree.varOrRecordPattern);
+        scan(tree.var);
         scan(tree.expr);
         scan(tree.body);
     }
@@ -246,11 +247,6 @@ public class TreeScanner extends Visitor {
     public void visitAssert(JCAssert tree) {
         scan(tree.cond);
         scan(tree.detail);
-    }
-
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        scan(tree.pattern);
-        scan(tree.expr);
     }
 
     public void visitApply(JCMethodInvocation tree) {

@@ -1,0 +1,98 @@
+EnhancedVariableDeclInferenceErrors.java:44:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:49:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:54:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:59:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:63:26: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:67:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:80:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:85:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.CharSequence, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:90:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.Integer)
+EnhancedVariableDeclInferenceErrors.java:99:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Number, java.lang.Integer)
+EnhancedVariableDeclInferenceErrors.java:104:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:109:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:121:13: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:125:13: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:129:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:133:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:141:39: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:146:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:152:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:157:51: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>, EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.String>>)
+EnhancedVariableDeclInferenceErrors.java:162:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:175:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:180:18: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:187:28: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:194:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, java.lang.String)
+EnhancedVariableDeclInferenceErrors.java:198:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:202:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:206:29: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.Object>)
+EnhancedVariableDeclInferenceErrors.java:210:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: T, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:214:37: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:218:16: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:219:20: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:220:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:224:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:228:28: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:232:18: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:236:30: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:240:37: compiler.err.prob.found.req: (compiler.misc.infer.no.conforming.instance.exists: T, EnhancedVariableDeclInferenceErrors.Carrier<T>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:244:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:248:32: compiler.err.prob.found.req: (compiler.misc.infer.no.conforming.instance.exists: T, EnhancedVariableDeclInferenceErrors.Carrier<T>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:252:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Box<compiler.misc.type.captureof: 1, ?>, EnhancedVariableDeclInferenceErrors.Point)
+EnhancedVariableDeclInferenceErrors.java:256:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:260:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:264:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: T, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:268:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:272:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:276:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:277:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:278:28: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:279:21: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:280:25: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:281:28: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:285:28: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:289:33: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:293:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.S, EnhancedVariableDeclInferenceErrors.R<?>)
+EnhancedVariableDeclInferenceErrors.java:297:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:301:30: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Carrier<java.lang.String>, EnhancedVariableDeclInferenceErrors.Rec<java.lang.String>)
+EnhancedVariableDeclInferenceErrors.java:305:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:309:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Record, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:313:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Marker, EnhancedVariableDeclInferenceErrors.Rec<?>)
+EnhancedVariableDeclInferenceErrors.java:317:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Several, EnhancedVariableDeclInferenceErrors.One<?>)
+EnhancedVariableDeclInferenceErrors.java:321:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:325:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Record, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:329:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Marker, EnhancedVariableDeclInferenceErrors.Rec<?>)
+EnhancedVariableDeclInferenceErrors.java:333:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInferenceErrors.Several, EnhancedVariableDeclInferenceErrors.One<?>)
+EnhancedVariableDeclInferenceErrors.java:337:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ?, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:341:23: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInferenceErrors.Box<?>)
+EnhancedVariableDeclInferenceErrors.java:345:30: compiler.err.instanceof.reifiable.not.safe: EnhancedVariableDeclInferenceErrors.Box, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>
+EnhancedVariableDeclInferenceErrors.java:349:35: compiler.err.instanceof.reifiable.not.safe: EnhancedVariableDeclInferenceErrors.Box, EnhancedVariableDeclInferenceErrors.Box<java.lang.String>
+EnhancedVariableDeclInferenceErrors.java:353:26: compiler.err.cant.resolve.location: kindname.variable, x, , , (compiler.misc.location: kindname.class, EnhancedVariableDeclInferenceErrors, null)
+EnhancedVariableDeclInferenceErrors.java:357:9: compiler.err.cant.resolve.location: kindname.class, Missing, , , (compiler.misc.location: kindname.class, EnhancedVariableDeclInferenceErrors, null)
+EnhancedVariableDeclInferenceErrors.java:63:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:67:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:71:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>
+EnhancedVariableDeclInferenceErrors.java:75:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>, EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>
+EnhancedVariableDeclInferenceErrors.java:94:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Pair<java.lang.String,java.lang.Object>, EnhancedVariableDeclInferenceErrors.Pair<java.lang.String,java.lang.Object>
+EnhancedVariableDeclInferenceErrors.java:113:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>, EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>
+EnhancedVariableDeclInferenceErrors.java:117:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>, EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>
+EnhancedVariableDeclInferenceErrors.java:129:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:133:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:137:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, EnhancedVariableDeclInferenceErrors.Box<compiler.misc.type.captureof: 1, ?>
+EnhancedVariableDeclInferenceErrors.java:167:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>, EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>
+EnhancedVariableDeclInferenceErrors.java:171:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>, EnhancedVariableDeclInferenceErrors.Box<EnhancedVariableDeclInferenceErrors.Box<java.lang.Object>>
+EnhancedVariableDeclInferenceErrors.java:305:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:309:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Record
+EnhancedVariableDeclInferenceErrors.java:313:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Rec<?>, EnhancedVariableDeclInferenceErrors.Marker
+EnhancedVariableDeclInferenceErrors.java:317:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.One<?>, EnhancedVariableDeclInferenceErrors.Several
+EnhancedVariableDeclInferenceErrors.java:321:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+EnhancedVariableDeclInferenceErrors.java:325:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Record
+EnhancedVariableDeclInferenceErrors.java:329:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Rec<?>, EnhancedVariableDeclInferenceErrors.Marker
+EnhancedVariableDeclInferenceErrors.java:333:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.One<?>, EnhancedVariableDeclInferenceErrors.Several
+EnhancedVariableDeclInferenceErrors.java:337:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, compiler.misc.type.captureof: 1, ?
+EnhancedVariableDeclInferenceErrors.java:341:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInferenceErrors.Box<?>, java.lang.Object
+- compiler.note.unchecked.filename: EnhancedVariableDeclInferenceErrors.java
+- compiler.note.unchecked.recompile
+- compiler.note.preview.filename: EnhancedVariableDeclInferenceErrors.java, DEFAULT
+- compiler.note.preview.recompile
+93 errors

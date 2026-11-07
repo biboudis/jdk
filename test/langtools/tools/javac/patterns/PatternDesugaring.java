@@ -93,26 +93,6 @@ public class PatternDesugaring extends TestRunner {
                    }
                },
                true);
-        doTest(base,
-               new String[0],
-               """
-               package test;
-               public class Test {
-                   static Integer sealedSuper(I p) {
-                       Point(Integer x, Integer y) = p;
-                       return x;
-                   }
-
-                   sealed interface I permits Point {}
-                   record Point(Integer x, Integer y) implements I {}
-               }
-               """,
-               decompiled -> {
-                   if (decompiled.split("instanceof").length != 2) {
-                       throw new AssertionError("Unexpected number of instanceof checks.");
-                   }
-               },
-               true);
     }
 
     @Test

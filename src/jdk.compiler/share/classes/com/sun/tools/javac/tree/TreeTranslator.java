@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -159,7 +159,13 @@ public class TreeTranslator extends JCTree.Visitor {
     public void visitVarDef(JCVariableDecl tree) {
         tree.mods = translate(tree.mods);
         tree.nameexpr = translate(tree.nameexpr);
-        tree.vartype = translate(tree.vartype);
+        if (!tree.isEnhancedDeclaration()) {
+            tree.vartype = translate(tree.vartype);
+        } else {
+            tree.pattern = translate(tree.pattern);
+            tree.pattern.declaration = tree;
+            tree.vartype = tree.pattern.deconstructor;
+        }
         tree.init = translate(tree.init);
         result = tree;
     }
@@ -193,14 +199,8 @@ public class TreeTranslator extends JCTree.Visitor {
         result = tree;
     }
 
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        tree.pattern = translate(tree.pattern);
-        tree.expr = translate(tree.expr);
-        result = tree;
-    }
-
     public void visitForeachLoop(JCEnhancedForLoop tree) {
-        tree.varOrRecordPattern = translate(tree.varOrRecordPattern);
+        tree.var = translate(tree.var);
         tree.expr = translate(tree.expr);
         tree.body = translate(tree.body);
         result = tree;

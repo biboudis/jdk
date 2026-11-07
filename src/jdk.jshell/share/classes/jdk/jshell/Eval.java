@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -233,7 +233,7 @@ class Eval {
                     -> processImport(userSource, compileSourceInt);
                 case VARIABLE
                     -> processVariables(userSource, units, compileSourceInt, pt);
-                case ENHANCED_VARIABLE_DECLARATION
+                case ENHANCED_VARIABLE
                     -> processEnhancedVarDecl(userSource, unitTree, compileSourceInt, pt);
                 case EXPRESSION_STATEMENT
                     -> processExpression(userSource, unitTree, compileSourceInt, pt);
@@ -256,7 +256,7 @@ class Eval {
     }
 
     private List<Snippet> processEnhancedVarDecl(String userSource, Tree unitTree, String compileSource, ParseTask pt) {
-        JCTree.JCEnhancedVariableDeclaration tree = (JCTree.JCEnhancedVariableDeclaration) unitTree;
+        JCTree.JCVariableDecl tree = (JCTree.JCVariableDecl) unitTree;
 
         List<JCTree.JCBindingPattern> patternBindings = new ArrayList<>();
 
@@ -955,6 +955,7 @@ class Eval {
             case IMPORT:
                 return Kind.IMPORT;
             case VARIABLE:
+            case ENHANCED_VARIABLE:
                 return Kind.VAR;
             case EXPRESSION_STATEMENT:
                 return Kind.EXPRESSION;

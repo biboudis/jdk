@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2006, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -108,6 +108,11 @@ public class TreeKindTest {
             case CLASS:
             case RECORD:
                 ok = ok & verify(k, i, i == ClassTree.class);
+                break;
+
+            case VARIABLE:
+            case ENHANCED_VARIABLE:
+                ok = ok & verify(k, i, i == VariableTree.class);
                 break;
 
             case ANNOTATION:

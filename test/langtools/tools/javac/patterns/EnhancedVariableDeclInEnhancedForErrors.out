@@ -1,8 +1,17 @@
-EnhancedVariableDeclInEnhancedForErrors.java:35:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInEnhancedForErrors.Interface)
+EnhancedVariableDeclInEnhancedForErrors.java:12:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInEnhancedForErrors.Point)
+EnhancedVariableDeclInEnhancedForErrors.java:18:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInEnhancedForErrors.Point)
+EnhancedVariableDeclInEnhancedForErrors.java:30:26: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ?, EnhancedVariableDeclInEnhancedForErrors.Rec)
+EnhancedVariableDeclInEnhancedForErrors.java:50:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclInEnhancedForErrors.IPoint, EnhancedVariableDeclInEnhancedForErrors.Point)
+EnhancedVariableDeclInEnhancedForErrors.java:55:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclInEnhancedForErrors.IPoint, EnhancedVariableDeclInEnhancedForErrors.Point)
+EnhancedVariableDeclInEnhancedForErrors.java:60:27: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclInEnhancedForErrors.Interface)
+EnhancedVariableDeclInEnhancedForErrors.java:66:35: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: T, EnhancedVariableDeclInEnhancedForErrors.Point)
 EnhancedVariableDeclInEnhancedForErrors.java:12:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.Point, java.lang.Object
 EnhancedVariableDeclInEnhancedForErrors.java:18:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.Point, java.lang.Object
 EnhancedVariableDeclInEnhancedForErrors.java:24:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.OPoint, EnhancedVariableDeclInEnhancedForErrors.OPoint
 EnhancedVariableDeclInEnhancedForErrors.java:30:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.Rec, compiler.misc.type.captureof: 1, ?
+EnhancedVariableDeclInEnhancedForErrors.java:35:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.OPoint, compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclInEnhancedForErrors.OPoint
+EnhancedVariableDeclInEnhancedForErrors.java:40:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.OPoint, T
+EnhancedVariableDeclInEnhancedForErrors.java:45:9: compiler.err.foreach.not.exhaustive.on.type: EnhancedVariableDeclInEnhancedForErrors.OPoint, T
 - compiler.note.preview.filename: EnhancedVariableDeclInEnhancedForErrors.java, DEFAULT
 - compiler.note.preview.recompile
-5 errors
+14 errors

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -287,7 +287,7 @@ implements CRTFlags {
 
         public void visitForeachLoop(JCEnhancedForLoop tree) {
             SourceRange sr = new SourceRange(startPos(tree), endPos(tree));
-            sr.mergeWith(csp(tree.varOrRecordPattern));
+            sr.mergeWith(csp(tree.var));
             sr.mergeWith(csp(tree.expr));
             sr.mergeWith(csp(tree.body));
             result = sr;

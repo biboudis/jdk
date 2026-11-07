@@ -1,0 +1,11 @@
+EnhancedVariableDeclFlowErrors.java:18:36: compiler.err.var.might.not.have.been.initialized: source
+EnhancedVariableDeclFlowErrors.java:24:19: compiler.err.var.might.not.have.been.initialized: source
+EnhancedVariableDeclFlowErrors.java:30:19: compiler.err.var.might.not.have.been.initialized: assigned
+EnhancedVariableDeclFlowErrors.java:35:39: compiler.err.var.might.be.assigned.in.loop: assigned
+EnhancedVariableDeclFlowErrors.java:52:36: compiler.err.unreported.exception.need.to.catch.or.throw: java.io.IOException
+EnhancedVariableDeclFlowErrors.java:56:42: compiler.err.unreported.exception.need.to.catch.or.throw: java.io.IOException
+EnhancedVariableDeclFlowErrors.java:40:43: compiler.err.cant.ref.non.effectively.final.var: value, (compiler.misc.lambda)
+EnhancedVariableDeclFlowErrors.java:46:47: compiler.err.cant.ref.non.effectively.final.var: value, (compiler.misc.lambda)
+- compiler.note.preview.filename: EnhancedVariableDeclFlowErrors.java, DEFAULT
+- compiler.note.preview.recompile
+8 errors
