@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2014, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,8 +25,6 @@
 
 package com.sun.source.tree;
 
-import jdk.internal.javac.PreviewFeature;
-
 /**
  * A tree node for an "enhanced" {@code for} loop statement.
  *
@@ -44,35 +42,10 @@ import jdk.internal.javac.PreviewFeature;
  */
 public interface EnhancedForLoopTree extends StatementTree {
     /**
-     * "Enhanced" {@code for} declarations come in two forms:
-     * <ul>
-     * <li> local variable declarations and
-     * <li> record patterns
-     * </ul>
-     *
-     * @since 28
-     */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    public enum DeclarationKind {
-        /** enum constant for local variable declarations */
-        VARIABLE,
-        /** enum constant for record pattern declarations */
-        PATTERN
-    }
-
-    /**
      * Returns the control variable for the loop.
-     * @return the control variable, or {@code null} if this "enhanced" {@code for} uses a pattern
+     * @return the declaration in the loop header
      */
     VariableTree getVariable();
-
-    /**
-     * Returns the record pattern for the loop.
-     * @return the record pattern, or {@code null} if this "enhanced" {@code for} uses a local variable declaration
-     * @since 28
-     */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    PatternTree getRecordPattern();
 
     /**
      * Returns the expression yielding the values for the control variable.
@@ -86,11 +59,4 @@ public interface EnhancedForLoopTree extends StatementTree {
      */
     StatementTree getStatement();
 
-    /**
-     * Returns the kind of the declaration of the "enhanced" {@code for}.
-     * @return the kind of the declaration
-     * @since 28
-     */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    DeclarationKind getDeclarationKind();
 }

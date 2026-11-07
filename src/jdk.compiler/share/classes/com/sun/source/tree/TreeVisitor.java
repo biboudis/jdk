@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -90,16 +90,6 @@ public interface TreeVisitor<R,P> {
      * @return a result value
      */
     R visitAssert(AssertTree node, P p);
-
-    /**
-     * Visits an {@code EnhancedVariableDeclarationTree} node.
-     * @param node the node being visited
-     * @param p a parameter value
-     * @return a result value
-     * @since 28
-     */
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    R visitEnhancedVariableDeclaration(EnhancedVariableDeclarationTree node, P p);
 
     /**
      * Visits an {@code AssignmentTree} node.

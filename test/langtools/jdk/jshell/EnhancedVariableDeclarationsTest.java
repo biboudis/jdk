@@ -39,6 +39,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EnhancedVariableDeclarationsTest extends KullaTesting {
 
     @Test
+    public void testSourceAnalysis() {
+        assertEval("record Box<T>(T value) {}");
+        assertAnalyze("Box(var value) = new Box<>(1);", "Box(var value) = new Box<>(1);", "", true);
+        assertEquals(null, getState().sourceCodeAnalysis().analyzeType("Box(var value) = new Box<>(1);", 0));
+        assertEnhancedVarDeclEval("Box(var value) = new Box<>(1);", 1);
+        assertEval("value", "1");
+    }
+
+    @Test
+    public void testArrayTypeArguments() {
+        assertEval("record Box<T>(T value) {}");
+        assertEnhancedVarDeclEval("Box<String[]>(var values) = new Box<>(new String[]{\"ok\"});", 1);
+        assertEval("values[0]", "\"ok\"");
+        assertEval("int total = 0;");
+        assertEval("for (Box<int[]>(var row) : java.util.List.of(new Box<>(new int[]{2, 3}))) { total += row[0] + row[1]; }");
+        assertEval("total", "5");
+    }
+
+    @Test
     public void testOneComponent() {
         assertEval("record Point(int a) {}");
         assertEquals(varKey(assertEval("Point p = new Point(42);")).name(), "p");
@@ -139,7 +158,14 @@ public class EnhancedVariableDeclarationsTest extends KullaTesting {
         assertEval("@Target(ElementType.TYPE_USE) @interface TA {}");
         assertEval("record Point(int a) {}");
         assertEval("Point p = new Point(1);");
-        assertDeclareFail("@TA Point(int x) = p;", "compiler.err.annotations.in.enhanced.declarations.not.allowed");
+        assertEnhancedVarDeclEval("@TA Point(int x) = p;", 1);
+        assertEval("x", "1");
+        assertEval("@Target(ElementType.LOCAL_VARIABLE) @interface Local {}");
+        assertEnhancedVarDeclEval("@Local @TA Point(var y) = p;", 1);
+        assertEval("y", "1");
+        assertEval("int sum = 0;");
+        assertEval("for (@Local @TA Point(var z) : java.util.List.of(p)) { sum += z; }");
+        assertEval("sum", "1");
     }
 
     @Test
@@ -165,10 +191,65 @@ public class EnhancedVariableDeclarationsTest extends KullaTesting {
         assertEval("interface IBox {}");
         assertEval("record BoxImpl(int x) implements IBox {}");
 
-        assertDeclareFail("Pair(var x, var y) = new Object();", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
-        assertDeclareFail("Box(var value) = new Object();", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
-        assertDeclareFail("BoxImpl(var x) = (IBox) new BoxImpl(1);", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
+        assertDeclareFail("Pair(var x, var y) = new Object();", "compiler.err.prob.found.req");
+        assertDeclareFail("Box(var value) = new Object();", "compiler.err.prob.found.req");
+        assertDeclareFail("BoxImpl(var x) = (IBox) new BoxImpl(1);", "compiler.err.prob.found.req");
         assertDeclareFail("Holder(Point(var x)) = new Holder(new Point(1));", "compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type");
+    }
+
+    @Test
+    public void testSourcesAssignableToRecords() {
+        assertEval("record Box<T>(T value) {}");
+        assertEval("""
+                <T extends Box<String>> String unpack(T box) {
+                    Box(var text) = box;
+                    return text;
+                }
+                """);
+        assertEval("unpack(new Box<>(\"bounded\"))", "\"bounded\"");
+
+        assertEval("java.util.List<? extends Box<String>> boxes = java.util.List.of(new Box<>(\"captured\"));");
+        assertEnhancedVarDeclEval("Box(var captured) = boxes.getFirst();", 1);
+        assertEval("captured.length()", "8");
+        assertEval("String loopValue = \"\";");
+        assertEval("for (Box<String>(var text) : boxes) { loopValue = text; }");
+        assertEval("loopValue", "\"captured\"");
+
+        assertEval("interface Marker {}");
+        assertEval("record Point(int value) implements Marker {}");
+        assertEval("Point point = new Point(7);");
+        assertEnhancedVarDeclEval("Point(var coordinate) = (Point & Marker) point;", 1);
+        assertEval("coordinate", "7");
+    }
+
+    @Test
+    public void testSealedSourcesRequireAssignmentCompatibility() {
+        assertEval("""
+                class Records {
+                    sealed interface Carrier<T> permits Rec {}
+                    record Rec<T>(T value) implements Carrier<T> {}
+                }
+                """);
+        assertEval("Records.Carrier<String> source = new Records.Rec<>(\"sealed\");");
+        for (String pattern : new String[] {
+                "Records.Rec(var value)",
+                "Records.Rec(_)",
+                "Records.Rec(var _)",
+                "Records.Rec(String _)",
+                "Records.Rec<?>(var value)",
+                "Records.Rec<String>(var value)"
+        }) {
+            assertDeclareFail(pattern + " = source;", "compiler.err.prob.found.req");
+            assertDeclareFail("for (" + pattern + " : java.util.List.of(source)) {}", "compiler.err.prob.found.req");
+        }
+
+        assertEval("record Box<T>(T value) {}");
+        assertEval("Box<Records.Carrier<String>> boxed = new Box<>(source);");
+        assertEnhancedVarDeclEval("Box(Records.Rec(var value)) = boxed;", 1);
+        assertEval("value.length()", "6");
+        assertEval("int length = 0;");
+        assertEval("for (Box(Records.Rec(var text)) : java.util.List.of(boxed)) { length += text.length(); }");
+        assertEval("length", "6");
     }
 
     @Test

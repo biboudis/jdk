@@ -1,0 +1,69 @@
+EnhancedVariableDeclAnnotationWarnings.java:38:52: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:39:47: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:42:52: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:47:47: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:54:52: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:55:43: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:58:52: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:63:43: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:72:33: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:73:33: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:74:9: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:75:38: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:76:38: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:77:14: compiler.warn.deprecated.annotation.has.no.effect: kindname.variable
+EnhancedVariableDeclAnnotationWarnings.java:102:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:105:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:108:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:110:53: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:112:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:115:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:118:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:121:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:124:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:127:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:130:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:133:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:136:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:139:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:142:50: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:144:51: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<java.lang.String>
+EnhancedVariableDeclAnnotationWarnings.java:148:83: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>>
+EnhancedVariableDeclAnnotationWarnings.java:149:79: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>[]
+EnhancedVariableDeclAnnotationWarnings.java:150:90: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>>
+EnhancedVariableDeclAnnotationWarnings.java:151:86: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>[]
+EnhancedVariableDeclAnnotationWarnings.java:152:82: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>>
+EnhancedVariableDeclAnnotationWarnings.java:153:78: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>[]
+EnhancedVariableDeclAnnotationWarnings.java:154:105: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, java.util.List<EnhancedVariableDeclAnnotationWarnings.Box<EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>>>
+EnhancedVariableDeclAnnotationWarnings.java:155:101: compiler.warn.prob.found.req: (compiler.misc.unchecked.cast.to.type), java.lang.Object, EnhancedVariableDeclAnnotationWarnings.Box<EnhancedVariableDeclAnnotationWarnings.Box<java.lang.String>>[]
+EnhancedVariableDeclAnnotationWarnings.java:161:13: compiler.warn.missing.SVUID: Local
+EnhancedVariableDeclAnnotationWarnings.java:164:13: compiler.warn.missing.SVUID: Local
+EnhancedVariableDeclAnnotationWarnings.java:167:13: compiler.warn.missing.SVUID: Local
+EnhancedVariableDeclAnnotationWarnings.java:170:13: compiler.warn.missing.SVUID: Local
+EnhancedVariableDeclAnnotationWarnings.java:193:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:195:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:196:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:198:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:199:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:199:24: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:201:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:201:55: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:202:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:202:24: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:204:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:204:55: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:205:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:207:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:208:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:210:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:211:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:211:24: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:213:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:213:55: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:214:18: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:214:24: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:216:49: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+EnhancedVariableDeclAnnotationWarnings.java:216:55: compiler.warn.raw.class.use: java.util.List, java.util.List<E>
+- compiler.note.preview.filename: EnhancedVariableDeclAnnotationWarnings.java, DEFAULT
+- compiler.note.preview.recompile
+66 warnings

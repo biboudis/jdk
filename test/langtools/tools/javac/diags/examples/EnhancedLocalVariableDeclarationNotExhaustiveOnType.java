@@ -27,9 +27,9 @@
 // options: --enable-preview -source ${jdk.version}
 
 class EnhancedLocalVariableDeclarationNotExhaustiveOnType {
-    void m(Object o) {
-        Point(var x) = o;
+    void m(Point p) {
+        Point(String x) = p;
     }
 
-    record Point(int x) {}
+    record Point(Object x) {}
 }

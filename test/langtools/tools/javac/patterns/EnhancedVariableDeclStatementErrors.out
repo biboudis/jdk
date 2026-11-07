@@ -1,25 +1,43 @@
-EnhancedVariableDeclStatementErrors.java:21:29: compiler.err.expected3: ',', ')', '['
-EnhancedVariableDeclStatementErrors.java:21:30: compiler.err.illegal.start.of.expr
-EnhancedVariableDeclStatementErrors.java:21:37: compiler.err.expected: ';'
-EnhancedVariableDeclStatementErrors.java:22:31: compiler.err.dot.class.expected
-EnhancedVariableDeclStatementErrors.java:22:32: compiler.err.expected: ';'
-EnhancedVariableDeclStatementErrors.java:22:39: compiler.err.expected: ';'
-EnhancedVariableDeclStatementErrors.java:22:43: compiler.err.not.stmt
-EnhancedVariableDeclStatementErrors.java:22:48: compiler.err.expected: ';'
-EnhancedVariableDeclStatementErrors.java:39:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:41:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:46:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:51:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:56:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:61:13: compiler.err.enhanced.variable.not.allowed
-EnhancedVariableDeclStatementErrors.java:67:13: compiler.err.enhanced.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:37:29: compiler.err.expected3: ',', ')', '['
+EnhancedVariableDeclStatementErrors.java:37:30: compiler.err.illegal.start.of.expr
+EnhancedVariableDeclStatementErrors.java:37:37: compiler.err.expected: ';'
+EnhancedVariableDeclStatementErrors.java:38:31: compiler.err.dot.class.expected
+EnhancedVariableDeclStatementErrors.java:38:32: compiler.err.expected: ';'
+EnhancedVariableDeclStatementErrors.java:38:39: compiler.err.expected: ';'
+EnhancedVariableDeclStatementErrors.java:38:43: compiler.err.not.stmt
+EnhancedVariableDeclStatementErrors.java:38:48: compiler.err.expected: ';'
+EnhancedVariableDeclStatementErrors.java:55:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:57:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:62:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:67:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:72:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:77:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:83:13: compiler.err.variable.not.allowed
+EnhancedVariableDeclStatementErrors.java:95:9: compiler.err.final.in.enhanced.declarations.not.allowed
+EnhancedVariableDeclStatementErrors.java:99:9: compiler.err.final.in.enhanced.declarations.not.allowed
+EnhancedVariableDeclStatementErrors.java:114:9: compiler.err.illegal.start.of.expr
+EnhancedVariableDeclStatementErrors.java:114:16: compiler.err.invalid.meth.decl.ret.type.req
+EnhancedVariableDeclStatementErrors.java:114:37: compiler.err.expected2: '{', ';'
+EnhancedVariableDeclStatementErrors.java:114:40: compiler.err.not.stmt
+EnhancedVariableDeclStatementErrors.java:114:39: compiler.err.expected: '{'
+EnhancedVariableDeclStatementErrors.java:115:9: compiler.err.illegal.start.of.expr
+EnhancedVariableDeclStatementErrors.java:115:16: compiler.err.invalid.meth.decl.ret.type.req
+EnhancedVariableDeclStatementErrors.java:115:37: compiler.err.expected2: '{', ';'
+EnhancedVariableDeclStatementErrors.java:115:40: compiler.err.not.stmt
+EnhancedVariableDeclStatementErrors.java:115:41: compiler.err.expected: token.identifier
+EnhancedVariableDeclStatementErrors.java:117:1: compiler.err.class.method.or.field.expected
+EnhancedVariableDeclStatementErrors.java:11:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Object, EnhancedVariableDeclStatementErrors.Point)
 EnhancedVariableDeclStatementErrors.java:15:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclStatementErrors.OPoint, EnhancedVariableDeclStatementErrors.Point)
-EnhancedVariableDeclStatementErrors.java:21:20: compiler.err.prob.found.req: (compiler.misc.not.a.functional.intf: EnhancedVariableDeclStatementErrors.Point)
-EnhancedVariableDeclStatementErrors.java:22:27: compiler.err.unexpected.type: kindname.value, kindname.class
-EnhancedVariableDeclStatementErrors.java:29:16: compiler.err.cant.resolve.location: kindname.variable, sx, , , (compiler.misc.location: kindname.class, EnhancedVariableDeclStatementErrors, null)
-EnhancedVariableDeclStatementErrors.java:34:19: compiler.err.already.defined: kindname.variable, sx, kindname.method, shadowing_error(EnhancedVariableDeclStatementErrors.Point)
-EnhancedVariableDeclStatementErrors.java:11:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclStatementErrors.Point, java.lang.Object
-EnhancedVariableDeclStatementErrors.java:15:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclStatementErrors.Point, EnhancedVariableDeclStatementErrors.OPoint
+EnhancedVariableDeclStatementErrors.java:31:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: EnhancedVariableDeclStatementErrors.IPoint, EnhancedVariableDeclStatementErrors.Point)
+EnhancedVariableDeclStatementErrors.java:37:20: compiler.err.prob.found.req: (compiler.misc.not.a.functional.intf: EnhancedVariableDeclStatementErrors.Point)
+EnhancedVariableDeclStatementErrors.java:38:27: compiler.err.unexpected.type: kindname.value, kindname.class
+EnhancedVariableDeclStatementErrors.java:45:16: compiler.err.cant.resolve.location: kindname.variable, sx, , , (compiler.misc.location: kindname.class, EnhancedVariableDeclStatementErrors, null)
+EnhancedVariableDeclStatementErrors.java:50:19: compiler.err.already.defined: kindname.variable, sx, kindname.method, shadowing_error(EnhancedVariableDeclStatementErrors.Point)
+EnhancedVariableDeclStatementErrors.java:87:46: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclStatementErrors.IPoint, EnhancedVariableDeclStatementErrors.Point)
+EnhancedVariableDeclStatementErrors.java:91:31: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: T, EnhancedVariableDeclStatementErrors.Point)
+EnhancedVariableDeclStatementErrors.java:19:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclStatementErrors.OPoint, compiler.misc.type.captureof: 1, ? extends EnhancedVariableDeclStatementErrors.OPoint
+EnhancedVariableDeclStatementErrors.java:23:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclStatementErrors.OPoint, T
+EnhancedVariableDeclStatementErrors.java:27:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: EnhancedVariableDeclStatementErrors.OPoint, EnhancedVariableDeclStatementErrors.OPoint&EnhancedVariableDeclStatementErrors.Marker
 - compiler.note.preview.filename: EnhancedVariableDeclStatementErrors.java, DEFAULT
 - compiler.note.preview.recompile
-22 errors
+40 errors

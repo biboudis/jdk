@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -885,6 +885,12 @@ public class TreeInfo {
             if (!checkMatch(that, that.sym))
                 super.visitMethodDef(that);
         }
+        public void visitRecordPattern(JCRecordPattern that) {
+            if (!that.isEnhancedDeclaration() || !checkMatch(that, that.declaration.sym)) {
+                super.visitRecordPattern(that);
+            }
+        }
+
         public void visitVarDef(JCVariableDecl that) {
             if (!checkMatch(that, that.sym))
                 super.visitVarDef(that);
@@ -1017,6 +1023,10 @@ public class TreeInfo {
             return ((JCMethodDecl) node).sym;
         case VARDEF:
             return ((JCVariableDecl) node).sym;
+
+        case RECORDPATTERN:
+            JCRecordPattern pattern = (JCRecordPattern) node;
+            return pattern.isEnhancedDeclaration() ? pattern.declaration.sym : null;
         case IDENT:
             return ((JCIdent) node).sym;
         case SELECT:
@@ -1083,6 +1093,10 @@ public class TreeInfo {
         switch (tree.getTag()) {
             case VARDEF:
                 return ((JCVariableDecl) tree).mods;
+
+            case RECORDPATTERN:
+                JCRecordPattern pattern = (JCRecordPattern) tree;
+                return pattern.isEnhancedDeclaration() ? pattern.declaration.mods : null;
             case METHODDEF:
                 return ((JCMethodDecl) tree).mods;
             case CLASSDEF:

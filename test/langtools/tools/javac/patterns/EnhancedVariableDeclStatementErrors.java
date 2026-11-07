@@ -7,12 +7,28 @@
 
 public class EnhancedVariableDeclStatementErrors {
 
-    static void exhaustivity_error1(Object point) {
+    static void incompatibleObjectSource(Object point) {
         Point(var x, var y) = point;
     }
 
-    static void exhaustivity_error2(OPoint opoint) {
+    static void incompatibleRecordSource(OPoint opoint) {
         Point(var x, var y) = opoint;
+    }
+
+    static void uncoveredComponentsFromCapturedSource(java.util.List<? extends OPoint> opoints) {
+        OPoint(String x, String y) = opoints.getFirst();
+    }
+
+    static <T extends OPoint> void uncoveredComponentsFromTypeVariableSource(T opoint) {
+        OPoint(String x, String y) = opoint;
+    }
+
+    static void uncoveredComponentsFromIntersectionSource(OPoint opoint) {
+        OPoint(String x, String y) = (OPoint & Marker) opoint;
+    }
+
+    static void incompatibleSealedSource(IPoint point) {
+        Point(var x, var y) = point;
     }
 
     static void expression_form_error(Point point) {
@@ -67,7 +83,35 @@ public class EnhancedVariableDeclStatementErrors {
             Point(var x, var y) = point;
     }
 
+    static void incompatibleCapturedSealedSource(java.util.List<? extends IPoint> points) {
+        Point(var x, var y) = points.getFirst();
+    }
+
+    static <T extends IPoint> void incompatibleTypeVariableSealedSource(T point) {
+        Point(var x, var y) = point;
+    }
+
+    static void finalModifier(Point point) {
+        final Point(var x, var y) = point;
+    }
+
+    static void annotatedFinalModifier(Point point) {
+        @SuppressWarnings("unchecked") final Point(var x, var y) = point;
+    }
+
     sealed interface IPoint permits Point {}
+    interface Marker { }
     record Point(Integer x, Integer y) implements IPoint { }
-    record OPoint(Object x, Object y) { }
+    record OPoint(Object x, Object y) implements Marker { }
+
+    record R(String value) {}
+    static R staticField;
+    public R publicField;
+    final R finalField = null;
+    @Deprecated R annotatedField;
+
+    void staticAndPublicModifiers(R r) {
+        static R(String staticValue) = r;
+        public R(String publicValue) = r;
+    }
 }

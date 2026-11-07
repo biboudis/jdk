@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,7 +29,6 @@ package com.sun.tools.javac.comp;
 import com.sun.source.tree.MemberReferenceTree.ReferenceMode;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Attribute.TypeCompound;
-import com.sun.tools.javac.code.Source.Feature;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.code.Type.TypeVar;
 import com.sun.tools.javac.jvm.Target;
@@ -79,7 +78,6 @@ public class TransTypes extends TreeTranslator {
     private final Resolve resolve;
     private final CompileStates compileStates;
     private final Target target;
-    private final boolean allowEnhancedVariableDecls;
 
     @SuppressWarnings("this-escape")
     protected TransTypes(Context context) {
@@ -95,10 +93,6 @@ public class TransTypes extends TreeTranslator {
         annotate = Annotate.instance(context);
         attr = Attr.instance(context);
         target = Target.instance(context);
-        Source source = Source.instance(context);
-        Preview preview = Preview.instance(context);
-        allowEnhancedVariableDecls = Feature.ENHANCED_VARIABLE_DECLS.allowedInSource(source) &&
-                                     (preview.isEnabled() || !preview.isPreview(Feature.ENHANCED_VARIABLE_DECLS));
     }
 
     /** Construct an attributed tree for a cast of expression to target type,
@@ -139,11 +133,7 @@ public class TransTypes extends TreeTranslator {
     JCExpression coerce(JCExpression tree, Type target) {
         Type btarget = target.baseType();
         if (tree.type.isPrimitive() == target.isPrimitive()) {
-            boolean rawAssignable = types.isAssignable(tree.type, btarget, types.noWarnings);
-            if (allowEnhancedVariableDecls && types.isSafeNarrowing(tree.type, btarget)) {
-                rawAssignable = false;
-            }
-            return rawAssignable
+            return types.isAssignable(tree.type, btarget, types.noWarnings)
                 ? tree
                 : cast(tree, btarget);
         }
@@ -510,7 +500,11 @@ public class TransTypes extends TreeTranslator {
     }
 
     public void visitVarDef(JCVariableDecl tree) {
-        tree.vartype = translate(tree.vartype, null);
+        if (tree.isEnhancedDeclaration()) {
+            tree.pattern = translate(tree.pattern);
+        } else {
+            tree.vartype = translate(tree.vartype, null);
+        }
         tree.init = translate(tree.init, tree.sym.erasure(types));
         tree.type = erasure(tree.type);
         result = tree;
@@ -537,14 +531,8 @@ public class TransTypes extends TreeTranslator {
         result = tree;
     }
 
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        tree.pattern = translate(tree.pattern);
-        tree.expr = translate(tree.expr, erasure(tree.expr.type));
-        result = tree;
-    }
-
     public void visitForeachLoop(JCEnhancedForLoop tree) {
-        tree.varOrRecordPattern = translate(tree.varOrRecordPattern, null);
+        tree.var = translate(tree.var, null);
         Type iterableType = tree.expr.type;
         tree.expr = translate(tree.expr, erasure(tree.expr.type));
         if (types.elemtype(tree.expr.type) == null)

@@ -1,0 +1,10 @@
+RecordPatternAnalyzerErrors.java:43:22: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.Integer, java.lang.String)
+RecordPatternAnalyzerErrors.java:48:24: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: RecordPatternAnalyzerErrors.Carrier<java.lang.String>, RecordPatternAnalyzerErrors.Rec<java.lang.String>)
+RecordPatternAnalyzerErrors.java:43:9: compiler.err.enhanced.local.variable.declaration.not.exhaustive.on.type: RecordPatternAnalyzerErrors.Box<java.lang.Integer>, RecordPatternAnalyzerErrors.Box<java.lang.Integer>
+RecordPatternAnalyzerErrors.java:44:12: compiler.warn.record.pattern.redundant.typeargs
+RecordPatternAnalyzerErrors.java:49:12: compiler.warn.record.pattern.redundant.typeargs
+RecordPatternAnalyzerErrors.java:53:12: compiler.warn.record.pattern.redundant.typeargs
+- compiler.note.preview.filename: RecordPatternAnalyzerErrors.java, DEFAULT
+- compiler.note.preview.recompile
+3 errors
+3 warnings

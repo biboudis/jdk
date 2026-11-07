@@ -1,0 +1,7 @@
+EnhancedVariableDeclInEnhancedForThisEscapeAnalyzer.java:37:24: compiler.warn.possible.this.escape
+EnhancedVariableDeclInEnhancedForThisEscapeAnalyzer.java:42:25: compiler.warn.possible.this.escape
+EnhancedVariableDeclInEnhancedForThisEscapeAnalyzer.java:47:21: compiler.warn.possible.this.escape
+EnhancedVariableDeclInEnhancedForThisEscapeAnalyzer.java:52:25: compiler.warn.possible.this.escape
+- compiler.note.preview.filename: EnhancedVariableDeclInEnhancedForThisEscapeAnalyzer.java, DEFAULT
+- compiler.note.preview.recompile
+4 warnings

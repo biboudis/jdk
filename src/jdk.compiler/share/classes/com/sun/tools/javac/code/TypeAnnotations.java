@@ -963,6 +963,7 @@ public class TypeAnnotations {
                     }
 
                 case VARIABLE:
+                case ENHANCED_VARIABLE:
                     VarSymbol v = ((JCVariableDecl) frame).sym;
                     if (v.getKind() != ElementKind.FIELD) {
                         appendTypeAnnotationsToOwner(v, v.getRawTypeAttributes());
@@ -1314,6 +1315,9 @@ public class TypeAnnotations {
 
             scan(tree.mods);
             scan(tree.vartype);
+            if (!sigOnly && tree.isEnhancedDeclaration()) {
+                scan(tree.pattern.nested);
+            }
             if (!sigOnly) {
                 scan(tree.init);
             }

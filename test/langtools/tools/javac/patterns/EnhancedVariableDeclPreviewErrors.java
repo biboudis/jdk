@@ -20,8 +20,20 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-sealed interface EnhancedVariableDeclSealedTypeChangesIntf
-        permits EnhancedVariableDeclSealedTypeChanges.A, EnhancedVariableDeclSealedTypeChangesClass {}
 
-final class EnhancedVariableDeclSealedTypeChangesClass
-        implements EnhancedVariableDeclSealedTypeChangesIntf {}
+/*
+ * @test /nodynamiccopyright/
+ * @bug 8372170
+ * @summary Check enhanced local variable declarations require preview
+ * @compile/fail/ref=EnhancedVariableDeclPreviewErrors.out -XDrawDiagnostics EnhancedVariableDeclPreviewErrors.java
+ */
+
+class EnhancedVariableDeclPreviewErrors {
+    record Box<T>(T value) {}
+
+    static <T> Box<T> empty() { return new Box<>(null); }
+
+    void test() {
+        Box<String>(var value) = empty();
+    }
+}

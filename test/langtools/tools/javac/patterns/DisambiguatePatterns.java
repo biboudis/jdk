@@ -43,7 +43,6 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.parser.JavacParser;
 import com.sun.tools.javac.parser.ParserFactory;
-import com.sun.tools.javac.tree.JCTree.JCEnhancedVariableDeclaration;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.main.Option;
@@ -52,11 +51,7 @@ import com.sun.tools.javac.util.Options;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 
@@ -154,6 +149,12 @@ public class DisambiguatePatterns {
                                  ForType.ENHANCED_FOR_WITH_LVDS);
         test.forDisambiguationTest("@Annot(field = \"test\") Point p",
                                  ForType.ENHANCED_FOR_WITH_LVDS);
+        test.forDisambiguationTest("Box<String[]> box",
+                                 ForType.ENHANCED_FOR_WITH_LVDS);
+        test.forDisambiguationTest("List<List<String[]>> rows",
+                                 ForType.ENHANCED_FOR_WITH_LVDS);
+        test.forDisambiguationTest("String @Ann [] @Ann [] xs",
+                                 ForType.ENHANCED_FOR_WITH_LVDS);
         test.forDisambiguationTest("R(T[] a)",
                                  ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
         test.forDisambiguationTest("Point(Integer a, Integer b)",
@@ -172,6 +173,42 @@ public class DisambiguatePatterns {
                                  ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
         test.forDisambiguationTest("RecordOfLists2(List<List<Integer>> lr)",
                                  ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<String[]>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<String[]>(String[] xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<String[]>(_)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<String[]>(var _)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<String[]>(String[] _)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Pair<int[], String[][]>(var a, var b)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<List<String[]>>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<List<List<String[]>>>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<List<List<List<String[]>>>>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Outer(Pair<String[], Integer>(var a, var b))",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Outer(Box<String[]>(var xs))",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<? extends String[][]>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<? super String[]>(var value)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("pkg.Box<java.util.List<? extends java.lang.String[][]>>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("@Ann Box<String[]>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<@Ann String @Ann [] @Ann []>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Box<@Ann(value = {1, 2}) String @Ann []>(var xs)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
+        test.forDisambiguationTest("Pair<String[], @Ann ? extends List<int[][]>>(var a, var b)",
+                                 ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS);
         test.forDisambiguationTest("T[].class.getName()",
                                  ForType.TRADITIONAL_FOR);
         test.forDisambiguationTest("method()",
@@ -183,6 +220,52 @@ public class DisambiguatePatterns {
         test.forDisambiguationTest("m(cond ? b() : i)",
                                  ForType.TRADITIONAL_FOR);
         test.forDisambiguationTest("m((GPoint<?>)null, cond ? b() : i)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("Box<String[]> box = rhs",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("List<List<String[]>> rows = rhs",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("String @Ann [] @Ann [] xs = rhs",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<byte[]>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<B, byte[]>m(b, bytes))",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<B[]>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(b.<byte[]>m(c), d)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<byte[], short[][]>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<List<String[]>>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A.<List<List<String[]>>>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(A<String[], short[][]>::method)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(ArrayList<String[]>::new)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(String[][].class)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(int[][][].class)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(String[][]::new)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("String[][].class.getName()",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x < y)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x < y, String[][].class)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x < y, A.<String[]>m())",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x > y)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x >> 1)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x >>> 1)",
+                                 ForType.TRADITIONAL_FOR);
+        test.forDisambiguationTest("a.m(x < y ? left() : right())",
                                  ForType.TRADITIONAL_FOR);
 
         // Local Variable Declaration, Enhanced Local Variable Declaration, or Expression Staement?
@@ -200,6 +283,42 @@ public class DisambiguatePatterns {
                                  BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
         test.statementDisambiguationTest("RecordOfLists2(List<List<Integer>> lr) = rol2",
                                  BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]>(String[] xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]>(_) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]>(var _) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]>(String[] _) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Pair<int[], String[][]>(var a, var b) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<List<String[]>>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<List<List<String[]>>>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<List<List<List<String[]>>>>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Outer(Pair<String[], Integer>(var a, var b)) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Outer(Box<String[]>(var xs)) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<? extends String[][]>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<? super String[]>(var value) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("pkg.Box<java.util.List<? extends java.lang.String[][]>>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("@Ann Box<String[]>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<@Ann String @Ann [] @Ann []>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<@Ann(value = {1, 2}) String @Ann []>(var xs) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Pair<String[], @Ann ? extends List<int[][]>>(var a, var b) = rhs",
+                                 BlockStatementType.ENHANCED_LOCAL_VARIABLE_DECLARATION);
         test.statementDisambiguationTest("Point p = p0",
                                  BlockStatementType.LOCAL_VARIABLE_DECLARATION);
         test.statementDisambiguationTest("@Ann Point p = p0",
@@ -212,6 +331,12 @@ public class DisambiguatePatterns {
                                  BlockStatementType.LOCAL_VARIABLE_DECLARATION);
         test.statementDisambiguationTest("var v = method()",
                                  BlockStatementType.LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("Box<String[]> box = rhs",
+                                 BlockStatementType.LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("List<List<String[]>> rows = rhs",
+                                 BlockStatementType.LOCAL_VARIABLE_DECLARATION);
+        test.statementDisambiguationTest("String @Ann [] @Ann [] xs = rhs",
+                                 BlockStatementType.LOCAL_VARIABLE_DECLARATION);
         test.statementDisambiguationTest("a.m(A.<byte[]>m())",
                                  BlockStatementType.EXPRESSION_STATEMENT);
         test.statementDisambiguationTest("a.m(A.<B, byte[]>m(b, bytes))",
@@ -219,6 +344,38 @@ public class DisambiguatePatterns {
         test.statementDisambiguationTest("a.m(A.<B[]>m())",
                                  BlockStatementType.EXPRESSION_STATEMENT);
         test.statementDisambiguationTest("a.m(b.<byte[]>m(c), d)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(A.<byte[], short[][]>m())",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(A.<List<String[]>>m())",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(A.<List<List<String[]>>>m())",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(A<String[], short[][]>::method)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(ArrayList<String[]>::new)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(String[][].class)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(int[][][].class)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(String[][]::new)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("String[][].class.getName()",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x < y)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x < y, String[][].class)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x < y, A.<String[]>m())",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x > y)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x >> 1)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x >>> 1)",
+                                 BlockStatementType.EXPRESSION_STATEMENT);
+        test.statementDisambiguationTest("a.m(x < y ? left() : right())",
                                  BlockStatementType.EXPRESSION_STATEMENT);
     }
 
@@ -295,7 +452,7 @@ public class DisambiguatePatterns {
             }
         } else {
             EnhancedForLoopTree ef = (EnhancedForLoopTree) st;
-            ForType actualType = ef.getRecordPattern() != null
+            ForType actualType = ef.getVariable().getKind() == Kind.ENHANCED_VARIABLE
                     ? ForType.ENHANCED_FOR_WITH_PATTERNS_WITH_ELVDS
                     : ForType.ENHANCED_FOR_WITH_LVDS;
             if (forType != actualType) {
@@ -320,12 +477,12 @@ public class DisambiguatePatterns {
         StatementTree st = method.getBody().getStatements().get(0);
         switch (expectedType) {
             case ENHANCED_LOCAL_VARIABLE_DECLARATION -> {
-                if (!(st instanceof JCEnhancedVariableDeclaration)) {
-                    throw new AssertionError("Expected JCEnhancedVariableDecl, got: " + st.getClass() +
+                if (!(st instanceof JCVariableDecl)) {
+                    throw new AssertionError("Expected pattern-based JCVariableDecl, got: " + st.getClass() +
                             ", for: " + code + ", parsed: " + result);
                 }
-                if (st.getKind() != Kind.ENHANCED_VARIABLE_DECLARATION) {
-                    throw new AssertionError("Expected kind ENHANCED_VARIABLE_DECL, got: " + st.getKind() +
+                if (st.getKind() != Kind.ENHANCED_VARIABLE) {
+                    throw new AssertionError("Expected kind ENHANCED_VARIABLE, got: " + st.getKind() +
                             ", for: " + code + ", parsed: " + result);
                 }
             }

@@ -734,6 +734,19 @@ public class Pretty extends JCTree.Visitor {
     }
 
     public void visitVarDef(JCVariableDecl tree) {
+        if (tree.isEnhancedDeclaration()) {
+            try {
+                printExpr(tree.pattern);
+                if (tree.init != null) {
+                    print(" = ");
+                    printExpr(tree.init);
+                }
+                if (prec == TreeInfo.notExpression) print(";");
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return;
+        }
         try {
             if (docComments != null && docComments.hasComment(tree)) {
                 println(); align();
@@ -922,24 +935,11 @@ public class Pretty extends JCTree.Visitor {
     public void visitForeachLoop(JCEnhancedForLoop tree) {
         try {
             print("for (");
-            printExpr(tree.varOrRecordPattern);
+            printExpr(tree.var);
             print(" : ");
             printExpr(tree.expr);
             print(") ");
             printStat(tree.body);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        try {
-            printExpr(tree.pattern);
-            if (tree.expr != null) {
-                print(" = ");
-                printExpr(tree.expr );
-            }
-            print(";");
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -1073,6 +1073,9 @@ public class Pretty extends JCTree.Visitor {
     @Override
     public void visitRecordPattern(JCRecordPattern tree) {
         try {
+            if (tree.isEnhancedDeclaration()) {
+                printAnnotations(tree.declaration.mods.annotations);
+            }
             printExpr(tree.deconstructor);
             print('(');
             printExprs(tree.nested);

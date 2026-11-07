@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -239,6 +239,7 @@ public class TreeScanner<R,P> implements TreeVisitor<R,P> {
     public R visitVariable(VariableTree node, P p) {
         R r = scan(node.getModifiers(), p);
         r = scanAndReduce(node.getType(), p, r);
+        r = scanAndReduce(node.getPattern(), p, r);
         r = scanAndReduce(node.getNameExpression(), p, r);
         r = scanAndReduce(node.getInitializer(), p, r);
         return r;
@@ -334,27 +335,9 @@ public class TreeScanner<R,P> implements TreeVisitor<R,P> {
     @Override
     public R visitEnhancedForLoop(EnhancedForLoopTree node, P p) {
         R r = scan(node.getVariable(), p);
-        r = scanAndReduce(node.getRecordPattern(), p, r);
+
         r = scanAndReduce(node.getExpression(), p, r);
         r = scanAndReduce(node.getStatement(), p, r);
-        return r;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implSpec This implementation scans the children in left to right order.
-     *
-     * @param node  {@inheritDoc}
-     * @param p  {@inheritDoc}
-     * @return the result of scanning
-     * @since 28
-     */
-    @Override
-    @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-    public R visitEnhancedVariableDeclaration(EnhancedVariableDeclarationTree node, P p) {
-        R r = scan(node.getPattern(), p);
-        r = scanAndReduce(node.getExpression(), p, r);
         return r;
     }
 

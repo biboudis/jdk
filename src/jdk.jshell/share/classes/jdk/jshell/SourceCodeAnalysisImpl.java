@@ -696,7 +696,7 @@ class SourceCodeAnalysisImpl extends SourceCodeAnalysis {
                         if (insertPrimitiveTypes) {
                             Tree parent = tp.getParentPath().getLeaf();
                             accept = switch (parent.getKind()) {
-                                case VARIABLE -> ((VariableTree) parent).getType() == tp.getLeaf() ?
+                                case VARIABLE, ENHANCED_VARIABLE -> ((VariableTree) parent).getType() == tp.getLeaf() ?
                                                  IS_VOID.negate() :
                                                  TRUE;
                                 case PARAMETERIZED_TYPE -> FALSE; // TODO: JEP 218: Generics over Primitive Types
@@ -1136,7 +1136,7 @@ class SourceCodeAnalysisImpl extends SourceCodeAnalysis {
 
     private boolean isVariable(TreePath tp) {
         return tp.getParentPath() != null &&
-               tp.getParentPath().getLeaf().getKind() == Kind.VARIABLE;
+               tp.getParentPath().getLeaf() instanceof VariableTree;
     }
 
     private String getAnnotationAttributeNameOrNull(TreePath tp, boolean acceptArray) {
@@ -1596,7 +1596,8 @@ class SourceCodeAnalysisImpl extends SourceCodeAnalysis {
                 }
                 break;
             }
-            case VARIABLE: {
+            case VARIABLE:
+            case ENHANCED_VARIABLE: {
                 VariableTree tree = (VariableTree) forPath.getParentPath().getLeaf();
                 if (tree.getInitializer()== current)
                     return Collections.singletonList(at.trees().getTypeMirror(forPath.getParentPath()));
@@ -2217,7 +2218,7 @@ class SourceCodeAnalysisImpl extends SourceCodeAnalysis {
     public String analyzeType(String code, int cursor) {
         switch (guessKind(code)) {
             case IMPORT: case METHOD: case CLASS: case ENUM: case RECORD:
-            case INTERFACE: case ANNOTATION_TYPE: case VARIABLE:
+            case INTERFACE: case ANNOTATION_TYPE: case VARIABLE: case ENHANCED_VARIABLE:
                 return null;
             default:
                 break;

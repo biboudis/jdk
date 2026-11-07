@@ -28,7 +28,6 @@ package com.sun.tools.javac.comp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.LambdaExpressionTree.BodyKind;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Kinds.KindSelector;
@@ -3565,6 +3564,7 @@ public class Lower extends TreeTranslator {
 
     /** Translate away the foreach loop.  */
     public void visitForeachLoop(JCEnhancedForLoop tree) {
+        Assert.check(!tree.var.isEnhancedDeclaration());
         if (types.elemtype(tree.expr.type) == null)
             visitIterableForeachLoop(tree);
         else
@@ -3622,8 +3622,7 @@ public class Lower extends TreeTranslator {
             JCExpression loopvarinit = make.Indexed(make.Ident(arraycache),
                                                     make.Ident(index)).setType(elemtype);
 
-            Assert.check(tree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.VARIABLE);
-            JCVariableDecl jcVariableDecl = (JCVariableDecl) tree.varOrRecordPattern;
+            JCVariableDecl jcVariableDecl = tree.var;
 
             loopvarinit = transTypes.coerce(attrEnv, loopvarinit, jcVariableDecl.type);
             JCVariableDecl loopvardef = (JCVariableDecl)make.VarDef(jcVariableDecl.mods,
@@ -3712,9 +3711,8 @@ public class Lower extends TreeTranslator {
                                        List.nil());
             JCExpression vardefinit = make.App(make.Select(make.Ident(itvar), next));
 
-            Assert.check(tree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.VARIABLE);
 
-            JCVariableDecl var = (JCVariableDecl) tree.varOrRecordPattern;
+            JCVariableDecl var = tree.var;
             if (var.type.isPrimitive())
                 vardefinit = make.TypeCast(types.cvarUpperBound(iteratorTarget), vardefinit);
             else

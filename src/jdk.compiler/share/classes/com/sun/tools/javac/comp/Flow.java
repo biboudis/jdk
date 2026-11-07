@@ -634,6 +634,9 @@ public class Flow {
         }
 
         public void visitVarDef(JCVariableDecl tree) {
+            if (tree.isEnhancedDeclaration()) {
+                analyzeEnhancedVariableDeclaration(tree);
+            }
             scan(tree.init);
         }
 
@@ -679,22 +682,17 @@ public class Flow {
                 tree.cond != null && !tree.cond.type.isTrue());
         }
 
-        public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-            if (tree.pattern instanceof JCRecordPattern rp) {
-                visitRecordPattern(rp);
-            }
+        private void analyzeEnhancedVariableDeclaration(JCVariableDecl tree) {
+            visitRecordPattern(tree.pattern);
 
-            if (!checkExhaustiveSwitchProperty(tree.expr.pos(), tree.pattern, tree.expr.type)) {
-                log.error(tree, Errors.EnhancedLocalVariableDeclarationNotExhaustiveOnType(tree.pattern.type, tree.expr.type));
+            if (!checkExhaustiveSwitchProperty(tree.init.pos(), tree.pattern, tree.init.type)) {
+                log.error(tree, Errors.EnhancedLocalVariableDeclarationNotExhaustiveOnType(tree.pattern.type, tree.init.type));
             }
-
-            scan(tree.expr);
         }
 
         public void visitForeachLoop(JCEnhancedForLoop tree) {
-            if(tree.varOrRecordPattern instanceof JCVariableDecl jcVariableDecl) {
-                visitVarDef(jcVariableDecl);
-            } else if (tree.varOrRecordPattern instanceof JCRecordPattern jcRecordPattern) {
+            if (tree.var.isEnhancedDeclaration()) {
+                JCRecordPattern jcRecordPattern = tree.var.pattern;
                 visitRecordPattern(jcRecordPattern);
 
                 if (!checkExhaustiveSwitchProperty(tree.pos(), jcRecordPattern, tree.elementType)) {
@@ -1190,6 +1188,7 @@ public class Flow {
         }
 
         public void visitVarDef(JCVariableDecl tree) {
+            scan(tree.pattern);
             scan(tree.init);
         }
 
@@ -1229,11 +1228,7 @@ public class Flow {
         }
 
         public void visitForeachLoop(JCEnhancedForLoop tree) {
-            if(tree.varOrRecordPattern instanceof JCVariableDecl jcVariableDecl) {
-                visitVarDef(jcVariableDecl);
-            } else if (tree.varOrRecordPattern instanceof JCRecordPattern jcRecordPattern) {
-                visitRecordPattern(jcRecordPattern);
-            }
+            scan(tree.var);
             ListBuffer<PendingExit> prevPendingExits = pendingExits;
             scan(tree.expr);
             pendingExits = new ListBuffer<>();
@@ -2227,6 +2222,7 @@ public class Flow {
                     letInit(tree.pos(), tree.sym);
                 }
             }
+            scan(tree.pattern);
         }
 
         public void visitBlock(JCBlock tree) {
@@ -2359,12 +2355,8 @@ public class Flow {
             final Bits initsStart = new Bits(inits);
             final Bits uninitsStart = new Bits(uninits);
 
-            if(tree.varOrRecordPattern instanceof JCVariableDecl jcVariableDecl) {
-                visitVarDef(jcVariableDecl);
-                letInit(tree.pos(), jcVariableDecl.sym);
-            } else if (tree.varOrRecordPattern instanceof JCRecordPattern jcRecordPattern) {
-                visitRecordPattern(jcRecordPattern);
-            }
+            visitVarDef(tree.var);
+            letInit(tree.pos(), tree.var.sym);
 
             pendingExits = new ListBuffer<>();
             int prevErrors = log.nerrors;

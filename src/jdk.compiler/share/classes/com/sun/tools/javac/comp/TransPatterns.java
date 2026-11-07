@@ -1197,8 +1197,7 @@ public class TransPatterns extends TreeTranslator {
         return List.of(nullCheck, matchCheck);
     }
 
-    @Override
-    public void visitEnhancedVariableDeclaration(JCTree.JCEnhancedVariableDeclaration tree) {
+    private void translateEnhancedVariableDeclaration(JCVariableDecl tree) {
         /**
          * A statement of the form
          *
@@ -1222,7 +1221,8 @@ public class TransPatterns extends TreeTranslator {
          */
         bindingContext = new BasicBindingContext();
         try {
-            JCExpression expr = translate(tree.expr);
+            JCExpression expr = translate(tree.init);
+            // TODO: Use tree.sym.erasure(types) after verifying null handling and type annotation metadata.
             Type tempType = expr.type.hasTag(BOT) ? syms.objectType : expr.type;
 
             // synthetic temp to hold RHS
@@ -1230,8 +1230,9 @@ public class TransPatterns extends TreeTranslator {
                     names.fromString(tree.pos + target.syntheticNameChar() + "temp"),
                     tempType,
                     currentMethodSym);
+            letBoundCandidate.setTypeAttributes(tree.sym.getRawTypeAttributes());
             JCStatement letBoundCandidateRef =
-                    make.at(tree.pos).VarDef(letBoundCandidate, expr).setType(tempType);
+                    make.at(tree.pos).VarDef(letBoundCandidate, expr);
 
             List<JCStatement> checks =
                     makeEnhancedVariableMatchChecks(tree.pos, letBoundCandidate, tree.pattern);
@@ -1251,7 +1252,8 @@ public class TransPatterns extends TreeTranslator {
         bindingContext = new BasicBindingContext();
         VarSymbol prevCurrentValue = currentValue;
         try {
-            if (tree.varOrRecordPattern instanceof JCRecordPattern jcRecordPattern) {
+            if (tree.var.isEnhancedDeclaration()) {
+                JCRecordPattern jcRecordPattern = tree.var.pattern;
                 /**
                  * A statement of the form
                  *
@@ -1279,9 +1281,8 @@ public class TransPatterns extends TreeTranslator {
                         types.classBound(tree.elementType),
                         currentMethodSym);
 
-                tree.varOrRecordPattern = make.at(tree.pos)
-                        .VarDef(currentValue, null)
-                        .setType(currentValue.type);
+                currentValue.setTypeAttributes(tree.var.sym.getRawTypeAttributes());
+                tree.var = make.at(tree.pos).VarDef(currentValue, null);
 
                 JCStatement originalBody = tree.body;
 
@@ -1482,6 +1483,10 @@ public class TransPatterns extends TreeTranslator {
     }
 
     public void visitVarDef(JCVariableDecl tree) {
+        if (tree.isEnhancedDeclaration()) {
+            translateEnhancedVariableDeclaration(tree);
+            return;
+        }
         MethodSymbol prevMethodSym = currentMethodSym;
         int prevVariableIndex = variableIndex;
         try {

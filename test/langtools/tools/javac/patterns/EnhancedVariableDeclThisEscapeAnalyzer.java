@@ -21,33 +21,23 @@
  * questions.
  */
 /*
- * @test /nodynamiccopyright/
- * @summary Verify disallowed modifiers are rejected on enhanced local variable declarations
+ * @test
+ * @bug 8372170
+ * @summary Check this reference tracking for enhanced local variable declarations
  * @enablePreview
- * @compile/fail/ref=EnhancedVariableDeclDisallowedModifiers.out -XDrawDiagnostics EnhancedVariableDeclDisallowedModifiers.java
+ * @compile -Xlint:this-escape -Werror EnhancedVariableDeclThisEscapeAnalyzer.java
  */
 
-public class EnhancedVariableDeclDisallowedModifiers {
-    record R(String s) {}
+public class EnhancedVariableDeclThisEscapeAnalyzer {
+    record Box<T>(T value) {}
 
-    static R staticField;
-    public R publicField;
-    final R finalField = null;
-    @Deprecated R annotationField;
+    @SuppressWarnings("unchecked")
+    private <T> T self() { return (T) this; }
 
-    void finalModifier(R r) {
-        final R(String finalBinding) = r;
-    }
-
-    void annotationModifier(R r) {
-        @Deprecated R(String annotationBinding) = r;
-    }
-
-    void staticModifier(R r) {
-        static R(String staticBinding) = r;
-    }
-
-    void publicModifier(R r) {
-        public R(String publicBinding) = r;
+    public EnhancedVariableDeclThisEscapeAnalyzer() {
+        Box<?> ordinary = self();
+        Box<?>(var value) = self();
+        Box<?>(_) = self();
+        Box<?>(var _) = self();
     }
 }

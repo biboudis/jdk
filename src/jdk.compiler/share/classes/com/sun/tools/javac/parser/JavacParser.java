@@ -984,6 +984,11 @@ public class JavacParser implements Parser {
      */
     public JCPattern parsePattern(int pos, JCModifiers mods, JCExpression parsedType,
                                   boolean allowVar, boolean checkGuard) {
+        return parsePattern(pos, mods, parsedType, allowVar, checkGuard, false);
+    }
+
+    private JCPattern parsePattern(int pos, JCModifiers mods, JCExpression parsedType,
+                                   boolean allowVar, boolean checkGuard, boolean declaration) {
         JCPattern pattern;
         mods = mods != null ? mods : optFinal(0);
         JCExpression e;
@@ -1017,11 +1022,15 @@ public class JavacParser implements Parser {
                 }
                 accept(RPAREN);
                 pattern = toP(F.at(pos).RecordPattern(e, nested.toList()));
-                if (mods.annotations.nonEmpty()) {
+                if (declaration) {
+                    Assert.check(!e.hasTag(VARTYPE));
+                    ((JCRecordPattern) pattern).declaration = F.at(pos)
+                            .VarDef(mods, names.empty, e, null);
+                } else if (mods.annotations.nonEmpty()) {
                     log.error(mods.annotations.head.pos(), Errors.RecordPatternsAnnotationsNotAllowed);
                 }
                 checkNoMods(pos, mods.flags & Flags.FINAL);
-                new TreeScanner() {
+                if (!declaration) new TreeScanner() {
                     @Override
                     public void visitAnnotatedType(JCAnnotatedType tree) {
                         log.error(tree.pos(), Errors.RecordPatternsAnnotationsNotAllowed);
@@ -2901,9 +2910,6 @@ public class JavacParser implements Parser {
             case VARDEF:
                 error = Errors.VariableNotAllowed;
                 break;
-            case ENHANCED_VAR_DECL:
-                error = Errors.EnhancedVariableNotAllowed;
-                break;
             }
             if (error != null) {
                 log.error(DiagnosticFlag.SYNTAX, first, error);
@@ -3115,13 +3121,14 @@ public class JavacParser implements Parser {
                 JCModifiers mods = optFinal(0);
                 JCExpression type = unannotatedType(false);
 
-                JCTree pattern = parsePattern(patternPos, mods, type, false, false);
+                JCPattern pattern = parsePattern(patternPos, mods, type, false, false, true);
+                JCVariableDecl variable = toP(F.at(patternPos).EnhancedVarDef(pattern, null));
                 checkSourceLevel(patternPos, Feature.ENHANCED_VARIABLE_DECLS);
                 accept(COLON);
                 JCExpression expr = parseExpression();
                 accept(RPAREN);
                 JCStatement body = parseStatementAsBlock();
-                return F.at(pos).ForeachLoop(pattern, expr, body);
+                return F.at(pos).ForeachLoop(variable, expr, body);
             } else {
                 List<JCStatement> inits = token.kind == SEMI ? List.nil() : forInit();
                 if (inits.length() == 1 &&
@@ -3268,6 +3275,7 @@ public class JavacParser implements Parser {
     public VariableDeclKind analyzeLocalVariableDeclaration() {
         boolean inType = false;
         boolean inSelectionAndParenthesis = false;
+        int typeArgumentDepth = 0;
         int typeParameterPossibleStart = -1;
         outer: for (int lookahead = 0; ; lookahead++) {
             TokenKind tk = S.token(lookahead).kind;
@@ -3290,8 +3298,16 @@ public class JavacParser implements Parser {
                     }
                     break;
                 case EXTENDS: case SUPER: case AMP:
-                case GTGTGT: case GTGT: case GT:
                 case ELLIPSIS:
+                    break;
+                case GTGTGT:
+                    typeArgumentDepth--;
+                case GTGT:
+                    typeArgumentDepth--;
+                case GT:
+                    if (--typeArgumentDepth < 0) {
+                        return VariableDeclKind.LocalVarDecl;
+                    }
                     break;
                 case BYTE: case SHORT: case INT: case LONG: case FLOAT:
                 case DOUBLE: case BOOLEAN: case CHAR: case VOID:
@@ -3349,16 +3365,20 @@ public class JavacParser implements Parser {
                 }
                 case LBRACKET: // int[].class, A<int[], short[][]>::method, etc
                     if (peekToken(lookahead, RBRACKET)) {
+                        if (typeArgumentDepth > 0) {
+                            lookahead++;
+                            break;
+                        }
                         int i = lookahead;
                         while (peekToken(i, RBRACKET) || peekToken(i, LBRACKET)) {
                             i+=1;
 
-                            if (!peekToken(i, IDENTIFIER) && (peekToken(i, DOT) || peekToken(i, COLCOL) || peekToken(i, COMMA))) {
+                            if (!peekToken(i, LAX_IDENTIFIER) && (peekToken(i, DOT) || peekToken(i, COLCOL) || peekToken(i, COMMA))) {
                                 return VariableDeclKind.LocalVarDecl;
                             }
                         }
 
-                        if (inSelectionAndParenthesis && !peekToken(i, IDENTIFIER)) {
+                        if (inSelectionAndParenthesis && !peekToken(i, LAX_IDENTIFIER)) {
                             lookahead = i - 1;
                             break;
                         }
@@ -3368,6 +3388,7 @@ public class JavacParser implements Parser {
                     }
                     return VariableDeclKind.LocalVarDecl;
                 case LT:
+                    typeArgumentDepth++;
                     typeParameterPossibleStart = lookahead;
                     break;
                 default:
@@ -3381,9 +3402,8 @@ public class JavacParser implements Parser {
         return parseEnhancedLocalVariableDecl(pos, optFinal(0));
     }
 
-    protected boolean hasDisallowedModifiers(JCModifiers mods) {
-        return mods != null
-                && (mods.annotations.nonEmpty() || (mods.flags & Flags.FINAL) != 0);
+    protected boolean hasDisallowedEnhancedLocalVariableDeclModifiers(JCModifiers mods) {
+        return mods != null && (mods.flags & Flags.FINAL) != 0;
     }
 
     public List<JCStatement> parseEnhancedLocalVariableDecl(int pos, JCModifiers mods) {
@@ -3391,17 +3411,12 @@ public class JavacParser implements Parser {
                 ? mods.pos
                 : token.pos;
         checkSourceLevel(pos, Feature.ENHANCED_VARIABLE_DECLS);
-        if (hasDisallowedModifiers(mods)) {
-            if (mods.annotations.nonEmpty()) {
-                log.error(mods.annotations.head.pos(),
-                        Errors.AnnotationsInEnhancedDeclarationsNotAllowed);
-            } else {
-                log.error(mods.pos, Errors.FinalInEnhancedDeclarationsNotAllowed);
-            }
-            mods = F.at(Position.NOPOS).Modifiers(0);
+        if (hasDisallowedEnhancedLocalVariableDeclModifiers(mods)) {
+            log.error(mods.pos, Errors.FinalInEnhancedDeclarationsNotAllowed);
+            mods = F.at(mods.pos).Modifiers(mods.flags & ~Flags.FINAL, mods.annotations);
         }
         JCExpression type = unannotatedType(false);
-        JCPattern pattern = parsePattern(patternPos, mods, type, false, false);
+        JCPattern pattern = parsePattern(patternPos, mods, type, false, false, true);
 
         accept(EQ);
         JCExpression expr = parseExpression();

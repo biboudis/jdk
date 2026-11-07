@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2018, Google LLC. All rights reserved.
- * Copyright (c) 2018, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -53,7 +53,6 @@ import com.sun.tools.javac.tree.JCTree.JCContinue;
 import com.sun.tools.javac.tree.JCTree.JCDefaultCaseLabel;
 import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
 import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
-import com.sun.tools.javac.tree.JCTree.JCEnhancedVariableDeclaration;
 import com.sun.tools.javac.tree.JCTree.JCErroneous;
 import com.sun.tools.javac.tree.JCTree.JCExports;
 import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
@@ -254,12 +253,6 @@ public class TreeDiffer extends TreeScanner {
     }
 
     @Override
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        JCEnhancedVariableDeclaration that = (JCEnhancedVariableDeclaration) parameter;
-        result = scan(tree.pattern, that.pattern) && scan(tree.expr, that.expr);
-    }
-
-    @Override
     public void visitAssign(JCAssign tree) {
         JCAssign that = (JCAssign) parameter;
         result = scan(tree.lhs, that.lhs) && scan(tree.rhs, that.rhs);
@@ -407,7 +400,7 @@ public class TreeDiffer extends TreeScanner {
     public void visitForeachLoop(JCEnhancedForLoop tree) {
         JCEnhancedForLoop that = (JCEnhancedForLoop) parameter;
         result =
-                scan(tree.varOrRecordPattern, that.varOrRecordPattern)
+                scan(tree.var, that.var)
                         && scan(tree.expr, that.expr)
                         && scan(tree.body, that.body);
     }
@@ -690,6 +683,7 @@ public class TreeDiffer extends TreeScanner {
                 scan(tree.mods, that.mods)
                         && scan(tree.nameexpr, that.nameexpr)
                         && scan(tree.vartype, that.vartype)
+                        && scan(tree.pattern, that.pattern)
                         && scan(tree.init, that.init);
 
         if (tree.sym.owner.type.hasTag(TypeTag.CLASS)) {

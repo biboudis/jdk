@@ -35,7 +35,6 @@ import javax.tools.JavaFileObject;
 
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.IdentifierTree;
-import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.TreeVisitor;
@@ -1268,7 +1267,22 @@ public class Attr extends JCTree.Visitor {
         }
     }
 
+    // Enter a local variable and process its declaration and type annotations.
+    private void enterLocalVariable(JCVariableDecl tree, Env<AttrContext> localEnv) {
+        try {
+            annotate.blockAnnotations();
+            memberEnter.memberEnter(tree, localEnv);
+            typeAnnotations.organizeTypeAnnotationsSignaturesForLocalVarType(localEnv, tree);
+        } finally {
+            annotate.unblockAnnotations();
+        }
+    }
+
     public void visitVarDef(JCVariableDecl tree) {
+        if (tree.isEnhancedDeclaration()) {
+            attribEnhancedVariableDeclaration(tree);
+            return;
+        }
         // Local variables have not been entered yet, so we need to do it now:
         if (env.info.scope.owner.kind == MTH || env.info.scope.owner.kind == VAR) {
             if (tree.sym != null) {
@@ -1290,13 +1304,7 @@ public class Attr extends JCTree.Visitor {
                         }
                     }
                 }
-                try {
-                    annotate.blockAnnotations();
-                    memberEnter.memberEnter(tree, env);
-                    typeAnnotations.organizeTypeAnnotationsSignaturesForLocalVarType(env, tree);
-                } finally {
-                    annotate.unblockAnnotations();
-                }
+                enterLocalVariable(tree, env);
             }
         } else {
             doQueueScanTreeAndTypeAnnotateForVarInit(tree, env);
@@ -1583,15 +1591,31 @@ public class Attr extends JCTree.Visitor {
         bindings.forEach(BindingSymbol::preserveBinding);
     }
 
-    public void visitEnhancedVariableDeclaration(JCEnhancedVariableDeclaration tree) {
-        attribExpr(tree.expr, env);
-        attribExpr(tree.pattern, env, tree.expr.type);
+    private void attribEnhancedVariableDeclaration(JCVariableDecl tree) {
+        Env<AttrContext> localEnv = env.dup(tree, env.info.dup());
+        prepareEnhancedDeclaration(tree, localEnv);
+        if (tree.sym != null) {
+            localEnv.info.lint = localEnv.info.lint.augment(tree.sym);
+        }
+        Lint previous = chk.setLint(localEnv.info.lint);
+        Type checkedInitType;
+        try {
+            Type target = patternTarget(tree.pattern);
+            attribExpr(tree.init, localEnv, target);
+            attribExpr(tree.pattern, localEnv, tree.init.type);
+            checkedInitType = target.hasTag(NONE)
+                    ? chk.checkType(tree.init.pos(), tree.init.type, tree.pattern.type)
+                    : tree.init.type;
+        } finally {
+            chk.setLint(previous);
+        }
 
         matchBindings.bindingsWhenTrue.forEach(env.info.scope::enter);
         matchBindings.bindingsWhenTrue.forEach(BindingSymbol::preserveBinding);
 
         Type clazztype = tree.pattern.type;
-        checkCastablePattern(tree.expr.pos(), tree.expr.type, clazztype);
+        tree.type = clazztype;
+        checkCastablePattern(tree.init.pos(), checkedInitType, clazztype);
 
         result = null;
     }
@@ -1630,38 +1654,31 @@ public class Attr extends JCTree.Visitor {
                     }
                 }
             }
-            if (tree.varOrRecordPattern instanceof JCVariableDecl jcVariableDecl) {
-                if (jcVariableDecl.isImplicitlyTyped()) {
-                    Type inferredType = chk.checkLocalVarType(jcVariableDecl, tree.elementType, jcVariableDecl.name);
-                    jcVariableDecl.type = inferredType;
-                    setupImplicitlyTypedVariable(jcVariableDecl, inferredType);
+            JCVariableDecl variable = tree.var;
+            Env<AttrContext> bodyEnv = loopEnv;
+            if (!variable.isEnhancedDeclaration()) {
+                if (variable.isImplicitlyTyped()) {
+                    Type inferredType = chk.checkLocalVarType(variable, tree.elementType, variable.name);
+                    variable.type = inferredType;
+                    setupImplicitlyTypedVariable(variable, inferredType);
                 }
-                attribStat(jcVariableDecl, loopEnv);
-                chk.checkType(tree.expr.pos(), tree.elementType, jcVariableDecl.sym.type);
-                loopEnv.tree = tree; // before, we were not in loop!
-                attribStat(tree.body, loopEnv);
+                attribStat(variable, loopEnv);
+                chk.checkType(tree.expr.pos(), tree.elementType, variable.sym.type);
             } else {
-                Assert.check(tree.getDeclarationKind() == EnhancedForLoopTree.DeclarationKind.PATTERN);
-                JCRecordPattern jcRecordPattern = (JCRecordPattern) tree.varOrRecordPattern;
+                JCRecordPattern pattern = variable.pattern;
+                prepareEnhancedDeclaration(variable, loopEnv);
+                attribExpr(pattern, loopEnv, tree.elementType);
+                Type checkedElementType = chk.checkType(tree.expr.pos(), tree.elementType, pattern.type);
+                checkCastablePattern(tree.expr.pos(), checkedElementType, pattern.type);
+                bodyEnv = bindingEnv(loopEnv, matchBindings.bindingsWhenTrue);
+            }
 
-                attribExpr(jcRecordPattern, loopEnv, tree.elementType);
-
-                // for(<pattern> x : xs) { y }
-                // we include x's bindings when true in y
-                // we don't do anything with x's bindings when false
-
-                MatchBindings forWithRecordPatternBindings = matchBindings;
-                Env<AttrContext> recordPatternEnv = bindingEnv(loopEnv, forWithRecordPatternBindings.bindingsWhenTrue);
-
-                Type clazztype = jcRecordPattern.type;
-
-                checkCastablePattern(tree.expr.pos(), tree.elementType, clazztype);
-
-                recordPatternEnv.tree = tree; // before, we were not in loop!
-                try {
-                    attribStat(tree.body, recordPatternEnv);
-                } finally {
-                    recordPatternEnv.info.scope.leave();
+            bodyEnv.tree = tree; // before, we were not in loop!
+            try {
+                attribStat(tree.body, bodyEnv);
+            } finally {
+                if (bodyEnv != loopEnv) {
+                    bodyEnv.info.scope.leave();
                 }
             }
 
@@ -4317,6 +4334,14 @@ public class Attr extends JCTree.Visitor {
         chk.checkRequiresIdentity(tree, env.info.lint);
     }
 
+    // Enter and annotate the implicit ELVD variable and mark its origin as mandated.
+    private void prepareEnhancedDeclaration(JCVariableDecl tree, Env<AttrContext> localEnv) {
+        if (tree.sym == null && !tree.vartype.hasTag(VARTYPE)) {
+            enterLocalVariable(tree, localEnv);
+            tree.sym.flags_field |= Flags.MANDATED;
+        }
+    }
+
     @Override
     public void visitRecordPattern(JCRecordPattern tree) {
         Type site;
@@ -4326,16 +4351,22 @@ public class Attr extends JCTree.Visitor {
             tree.record = syms.errSymbol;
             site = tree.type = types.createErrorType(tree.record.type);
         } else {
-            Type type = attribType(tree.deconstructor, env);
+            Type type = tree.deconstructor.type != null ?
+                    tree.deconstructor.type : attribType(tree.deconstructor, env);
             if (type.isRaw() && type.tsym.getTypeParameters().nonEmpty()) {
                 Type inferred = infer.instantiatePatternType(resultInfo.pt, type.tsym);
                 if (inferred == null) {
                     log.error(tree.pos(), Errors.PatternTypeCannotInfer);
                 } else {
-                    type = inferred;
+                    type = inferred.annotatedType(inferred.getAnnotationMirrors()
+                            .appendList(type.getAnnotationMirrors()));
                 }
             }
             tree.type = tree.deconstructor.type = type;
+            if (tree.isEnhancedDeclaration() && tree.declaration.sym != null) {
+                tree.declaration.type = tree.declaration.sym.type = type;
+                chk.checkDeprecatedAnnotation(tree.declaration, tree.declaration.sym);
+            }
             site = types.capture(tree.type);
             chk.validate(tree.deconstructor, env, true);
         }
@@ -5699,6 +5730,19 @@ public class Attr extends JCTree.Visitor {
         }
     }
 
+    private Type patternTarget(JCRecordPattern record) {
+        if (record.deconstructor.hasTag(VARTYPE)) {
+            return Type.noType;
+        }
+        Type recordType = record.deconstructor.type != null ?
+                record.deconstructor.type : attribType(record.deconstructor, env);
+        if (recordType.hasTag(ERROR) ||
+                recordType.isRaw() && recordType.tsym.getTypeParameters().nonEmpty()) {
+            return Type.noType;
+        }
+        return recordType;
+    }
+
     /** Finish the attribution of a class. */
     private void attribClassBody(Env<AttrContext> env, ClassSymbol c) {
         JCClassDecl tree = (JCClassDecl)env.tree;
@@ -5902,6 +5946,9 @@ public class Attr extends JCTree.Visitor {
                 validateAnnotatedType(tree.vartype, tree.sym.type);
             scan(tree.mods);
             scan(tree.vartype);
+            if (!sigOnly && tree.isEnhancedDeclaration()) {
+                scan(tree.pattern.nested);
+            }
             if (!sigOnly) {
                 scan(tree.init);
             }

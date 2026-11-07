@@ -1,0 +1,5 @@
+EnhancedVariableDeclAnnotationErrors.java:43:9: compiler.err.annotation.type.not.applicable
+EnhancedVariableDeclAnnotationErrors.java:47:16: compiler.err.duplicate.annotation.missing.container: EnhancedVariableDeclAnnotationErrors.Local
+- compiler.note.preview.filename: EnhancedVariableDeclAnnotationErrors.java, DEFAULT
+- compiler.note.preview.recompile
+2 errors

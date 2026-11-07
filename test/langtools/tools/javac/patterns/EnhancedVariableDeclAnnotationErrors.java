@@ -21,14 +21,30 @@
  * questions.
  */
 
-// key: compiler.err.annotations.in.enhanced.declarations.not.allowed
-// options: --enable-preview -source ${jdk.version} -Xlint:preview
+/*
+ * @test /nodynamiccopyright/
+ * @summary Check annotation errors on enhanced local declarations
+ * @enablePreview
+ * @compile/fail/ref=EnhancedVariableDeclAnnotationErrors.out -XDrawDiagnostics EnhancedVariableDeclAnnotationErrors.java
+ */
 
-class AnnotationsInEnhancedDeclarationsNotAllowed {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
-    public void test(Object o) {
-        @Deprecated R(String s) = o;
+public class EnhancedVariableDeclAnnotationErrors {
+    @Target(ElementType.LOCAL_VARIABLE)
+    @interface Local {}
+    @Target(ElementType.FIELD)
+    @interface Wrong {}
+
+    record Box<T>(T value) {}
+
+    void wrongTarget() {
+        @Wrong Box<String>(var value) = new Box<>("wrong");
     }
 
-    record R(String s) {}
+    void duplicateAnnotation() {
+        @Local @Local Box<String>(_) = new Box<>("duplicate");
+    }
+
 }

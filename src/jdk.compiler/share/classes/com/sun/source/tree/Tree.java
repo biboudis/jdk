@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -79,13 +79,6 @@ public interface Tree {
          * Used for instances of {@link AssertTree}.
          */
         ASSERT(AssertTree.class),
-
-        /**
-         * Used for instances of {@link EnhancedVariableDeclarationTree}.
-         * @since 28
-         */
-        @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
-        ENHANCED_VARIABLE_DECLARATION(EnhancedVariableDeclarationTree.class),
 
         /**
          * Used for instances of {@link AssignmentTree}.
@@ -345,9 +338,19 @@ public interface Tree {
         TYPE_PARAMETER(TypeParameterTree.class),
 
         /**
-         * Used for instances of {@link VariableTree}.
+         * Used for instances of {@link VariableTree} representing a declaration
+         * without a record pattern.
          */
         VARIABLE(VariableTree.class),
+
+        /**
+         * Used for instances of {@link VariableTree} representing a pattern-based
+         * declaration.
+         *
+         * @since 28
+         */
+        @PreviewFeature(feature=PreviewFeature.Feature.ENHANCED_LOCAL_VARIABLE_DECLARATIONS, reflective=true)
+        ENHANCED_VARIABLE(VariableTree.class),
 
         /**
          * Used for instances of {@link WhileLoopTree}.

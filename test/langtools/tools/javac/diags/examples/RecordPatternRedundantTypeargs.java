@@ -20,8 +20,16 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-sealed interface EnhancedVariableDeclAssignmentNR1SSealedTypeChangesIntf
-        permits EnhancedVariableDeclAssignmentNR1SSealedTypeChanges.A, EnhancedVariableDeclAssignmentNR1SSealedTypeChangesClass {}
 
-final class EnhancedVariableDeclAssignmentNR1SSealedTypeChangesClass
-        implements EnhancedVariableDeclAssignmentNR1SSealedTypeChangesIntf {}
+// key: compiler.warn.record.pattern.redundant.typeargs
+// key: compiler.note.preview.filename
+// key: compiler.note.preview.recompile
+// options: --enable-preview -source ${jdk.version} -XDfind=recordpattern
+
+class RecordPatternRedundantTypeargs {
+    record Box<T>(T value) {}
+
+    void test(Box<String> value) {
+        Box<String>(var x) = value;
+    }
+}

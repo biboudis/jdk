@@ -30,10 +30,10 @@
 import java.util.List;
 
 class ForeachNotExhaustive {
-    void m(List<Object> points) {
-        for (Point(var x, var y): points) {
+    void m(List<Point> points) {
+        for (Point(var x, String y): points) {
             System.out.println();
         }
     }
-    record Point(Integer x, Integer y) { }
+    record Point(Integer x, Object y) { }
 }

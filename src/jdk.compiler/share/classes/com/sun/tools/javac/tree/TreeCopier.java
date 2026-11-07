@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2006, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -224,18 +224,10 @@ public class TreeCopier<P> implements TreeVisitor<JCTree,P> {
     @DefinedBy(Api.COMPILER_TREE)
     public JCTree visitEnhancedForLoop(EnhancedForLoopTree node, P p) {
         JCEnhancedForLoop t = (JCEnhancedForLoop) node;
-        JCTree varOrRecordPattern = copy(t.varOrRecordPattern, p);
+        JCVariableDecl var = copy(t.var, p);
         JCExpression expr = copy(t.expr, p);
         JCStatement body = copy(t.body, p);
-        return M.at(t.pos).ForeachLoop(varOrRecordPattern, expr, body);
-    }
-
-    @DefinedBy(Api.COMPILER_TREE)
-    public JCTree visitEnhancedVariableDeclaration(EnhancedVariableDeclarationTree node, P p) {
-        JCEnhancedVariableDeclaration t = (JCEnhancedVariableDeclaration) node;
-        JCPattern recordPattern = copy(t.pattern, p);
-        JCExpression expr = copy(t.expr, p);
-        return M.at(t.pos).EnhancedVarDef(recordPattern, expr);
+        return M.at(t.pos).ForeachLoop(var, expr, body);
     }
 
     @DefinedBy(Api.COMPILER_TREE)
@@ -548,7 +540,12 @@ public class TreeCopier<P> implements TreeVisitor<JCTree,P> {
         JCRecordPattern t = (JCRecordPattern) node;
         JCExpression deconstructor = copy(t.deconstructor, p);
         List<JCPattern> nested = copy(t.nested, p);
-        return M.at(t.pos).RecordPattern(deconstructor, nested);
+        JCRecordPattern result = M.at(t.pos).RecordPattern(deconstructor, nested);
+        if (t.isEnhancedDeclaration()) {
+            result.declaration = M.at(t.declaration.pos)
+                    .VarDef(copy(t.declaration.mods, p), t.declaration.name, deconstructor, null);
+        }
+        return result;
     }
 
     @DefinedBy(Api.COMPILER_TREE)
@@ -561,6 +558,9 @@ public class TreeCopier<P> implements TreeVisitor<JCTree,P> {
     @DefinedBy(Api.COMPILER_TREE)
     public JCTree visitVariable(VariableTree node, P p) {
         JCVariableDecl t = (JCVariableDecl) node;
+        if (t.isEnhancedDeclaration()) {
+            return M.at(t.pos).EnhancedVarDef(copy(t.pattern, p), copy(t.init, p));
+        }
         JCModifiers mods = copy(t.mods, p);
         JCExpression vartype = copy(t.vartype, p);
         if (t.nameexpr == null) {

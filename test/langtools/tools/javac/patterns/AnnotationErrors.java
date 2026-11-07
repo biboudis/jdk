@@ -27,6 +27,23 @@ public class AnnotationErrors {
             case G<@TA String>(var s) when b1 -> {}
             default -> {}
         }
+        int result = switch (o) {
+            case @DA R(var s) -> 1;
+            default -> 0;
+        };
+    }
+
+    private void testNestedPatternAndTypeArgumentAnnotations(Object o) {
+        boolean nestedDeclaration = o instanceof G<?>(@DA R(var s));
+        switch (o) {
+            case G<?>(@TA R(var s)) -> {}
+            default -> {}
+        }
+        boolean annotatedWildcard = o instanceof G<@TA ?>(var s);
+        int nestedTypeArgument = switch (o) {
+            case G<?>(G<@TA ?>(var s)) -> 1;
+            default -> 0;
+        };
     }
 
     record R(String s) {}

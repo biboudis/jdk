@@ -8,4 +8,9 @@ AnnotationErrors.java:21:18: compiler.err.record.patterns.annotations.not.allowe
 AnnotationErrors.java:22:18: compiler.err.record.patterns.annotations.not.allowed
 AnnotationErrors.java:26:20: compiler.err.record.patterns.annotations.not.allowed
 AnnotationErrors.java:27:20: compiler.err.record.patterns.annotations.not.allowed
-10 errors
+AnnotationErrors.java:31:18: compiler.err.record.patterns.annotations.not.allowed
+AnnotationErrors.java:37:55: compiler.err.record.patterns.annotations.not.allowed
+AnnotationErrors.java:39:23: compiler.err.record.patterns.annotations.not.allowed
+AnnotationErrors.java:42:52: compiler.err.record.patterns.annotations.not.allowed
+AnnotationErrors.java:44:25: compiler.err.record.patterns.annotations.not.allowed
+15 errors

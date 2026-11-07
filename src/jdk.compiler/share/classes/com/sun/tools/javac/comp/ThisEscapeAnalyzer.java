@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -778,8 +778,8 @@ public class ThisEscapeAnalyzer extends TreeScanner {
         visitLooped(tree, foreach -> {
             // Scan iteration target
             scan(foreach.expr);
-            if (foreach.getVariable() instanceof JCVariableDecl jcvd &&
-                    jcvd.sym instanceof VarSymbol forEachVar) {
+            if (foreach.var.sym != null) {
+                VarSymbol forEachVar = foreach.var.sym;
                 if (elemType != null) {                     // array iteration
                     if (isParamOrVar(forEachVar)) {
                         refs.removeExprs(depth)
