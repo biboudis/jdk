@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,20 +20,8 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-/*
- * @test
- * @bug 8336781
- * @summary Erroneous exhaustivity check with boolean switch
- * @enablePreview
- * @compile -XDshould-stop.at=FLOW T8336781.java
- */
-public class T8336781 {
-    public static void test() {
-        Boolean bool = null;
-        var _ = switch (bool) {
-            case null -> "nothing";
-            case true -> "something true";
-            case false -> "something false";
-        };
-    }
-}
+
+// key: compiler.warn.preview.feature.use.classfile
+// options: --enable-preview --source ${jdk.version} -Xlint:preview
+
+record PreviewFeatureUseClassfile() {}

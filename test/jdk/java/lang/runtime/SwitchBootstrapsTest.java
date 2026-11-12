@@ -45,9 +45,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /*
  * @test
  * @bug 8318144
- * @enablePreview
  * @compile SwitchBootstrapsTest.java
- * @run junit SwitchBootstrapsTest
+ * @run junit/othervm SwitchBootstrapsTest
+ * @run junit/othervm --enable-preview SwitchBootstrapsTest
  */
 public class SwitchBootstrapsTest {
 
@@ -56,12 +56,6 @@ public class SwitchBootstrapsTest {
         MethodHandle indy = SwitchBootstraps.typeSwitch(MethodHandles.lookup(), "", switchType, labels).dynamicInvoker();
         assertEquals(result, (int) indy.invoke(target, start));
         assertEquals(-1, (int) indy.invoke(null, start));
-    }
-
-    private void testPrimitiveType(Object target, Class<?> targetType, int start, int result, Object... labels) throws Throwable {
-        MethodType switchType = MethodType.methodType(int.class, targetType, int.class);
-        MethodHandle indy = SwitchBootstraps.typeSwitch(MethodHandles.lookup(), "", switchType, labels).dynamicInvoker();
-        assertEquals(result, (int) indy.invoke(target, start));
     }
 
     private void testEnum(Enum<?> target, int start, int result, Object... labels) throws Throwable {
@@ -102,9 +96,6 @@ public class SwitchBootstrapsTest {
         testType(Short.valueOf((short) 1), 0, 0, 1, Integer.class);
         testType(Character.valueOf((char) 1), 0, 0, 1, Integer.class);
         testType(Integer.valueOf((int) 1), 0, 0, 1, Integer.class);
-        testType(1, 0, 1, 1.0d, Integer.class);
-        testType(1, 0, 1, 1.0f, Integer.class);
-        testType(1, 0, 1, true, Integer.class);
         testType("", 0, 0, String.class, String.class, String.class, String.class, String.class);
         testType("", 1, 1, String.class, String.class, String.class, String.class, String.class);
         testType("", 2, 2, String.class, String.class, String.class, String.class, String.class);
@@ -112,28 +103,51 @@ public class SwitchBootstrapsTest {
         testType("", 3, 3, String.class, String.class, String.class, String.class, String.class);
         testType("", 4, 4, String.class, String.class, String.class, String.class, String.class);
         testType("", 0, 0);
-        testType(new Object() {
-            @Override
-            public boolean equals(Object obj) {
-                if (obj instanceof Long i) {
-                    return i == 1;
-                }
-                return super.equals(obj);
-            }
-        }, 0, 1, 1L);
+
     }
 
     @Test
-    public void testPrimitiveTypes() throws Throwable {
-        testPrimitiveType((short) 1, short.class, 0, 1, String.class);
-        testPrimitiveType((byte) 1, byte.class,0, 1, String.class, byte.class);
-        testPrimitiveType(true, boolean.class,0, 1, false, boolean.class);
-        testPrimitiveType(1, int.class,0, 1, String.class);
-        testPrimitiveType(1, int.class,0, 1, true);
-        testPrimitiveType(true, boolean.class,0, 1, false);
-        testPrimitiveType((byte) 1, byte.class,0, 1, boolean.class, byte.class);
-        testPrimitiveType((byte) 1, byte.class,0, 1, Boolean.class, byte.class);
-        testPrimitiveType(true, boolean.class,0, 1, String.class, boolean.class);
+    public void testPrimitiveTypeCompatibility() throws Throwable {
+        Class<?>[] primitives = {byte.class, short.class, char.class, int.class,
+                                 long.class, float.class, double.class, boolean.class};
+        Object[] values = {(byte) 1, (short) 1, 'a', 1, 1L, 1.0f, 1.0d, true};
+        MethodType referenceType = MethodType.methodType(int.class, Object.class, int.class);
+        for (int i = 0; i < primitives.length; i++) {
+            Class<?> primitive = primitives[i];
+            Object value = values[i];
+            Class<?> wrapper = value.getClass();
+            MethodType primitiveType = MethodType.methodType(int.class, primitive, int.class);
+            Object[] labels = {primitive, wrapper};
+            MethodHandle target = SwitchBootstraps.typeSwitch(
+                    MethodHandles.lookup(), "", primitiveType, labels).dynamicInvoker();
+            assertEquals(primitiveType, target.type());
+            assertEquals(primitive, labels[0]); // The caller's array is not normalized in place.
+            assertEquals(0, (int) target.invoke(value, 0));
+            assertEquals(1, (int) target.invoke(value, 1));
+            assertEquals(2, (int) target.invoke(value, 2));
+            for (int k = 0; k < primitives.length; k++) {
+                // Primitive Class labels match instances of their wrapper classes.
+                int expected = i == k ? 0 : 1;
+                MethodHandle primitiveTarget = SwitchBootstraps.typeSwitch(
+                        MethodHandles.lookup(), "", primitiveType, primitives[k]).dynamicInvoker();
+                MethodHandle referenceTarget = SwitchBootstraps.typeSwitch(
+                        MethodHandles.lookup(), "", referenceType, primitives[k]).dynamicInvoker();
+                assertEquals(expected, (int) primitiveTarget.invoke(value, 0));
+                assertEquals(expected, (int) referenceTarget.invoke(value, 0));
+                assertEquals(-1, (int) referenceTarget.invoke((Object) null, 0));
+            }
+        }
+        assertThrows(IllegalArgumentException.class, () ->
+                SwitchBootstraps.typeSwitch(MethodHandles.lookup(), "", referenceType, void.class));
+    }
+
+    @Test
+    public void testRemovedConstantLabels() {
+        MethodType type = MethodType.methodType(int.class, Object.class, int.class);
+        for (Object label : new Object[] {1L, 1.0f, 1.0d, true}) {
+            assertThrows(IllegalArgumentException.class, () ->
+                    SwitchBootstraps.typeSwitch(MethodHandles.lookup(), "", type, label));
+        }
     }
 
     @Test

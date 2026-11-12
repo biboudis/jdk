@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
  * @bug 8262891 8290709
  * @summary Check the pattern domination error are reported correctly.
  * @compile/fail/ref=Domination.out -XDrawDiagnostics Domination.java
- * @compile/fail/ref=DominationWithPP.out --enable-preview --source ${jdk.version} -XDrawDiagnostics Domination.java
+ * @compile/fail/ref=DominationWithPreview.out --enable-preview --source ${jdk.version} -XDrawDiagnostics Domination.java
  */
 public class Domination {
     int testDominatesError1(Object o) {

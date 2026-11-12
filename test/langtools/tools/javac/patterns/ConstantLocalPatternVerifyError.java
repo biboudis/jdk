@@ -24,19 +24,13 @@
 /*
  * @test
  * @summary Verify constant locals used in binding patterns are materialized in temps
- * @enablePreview
- * @compile PrimitiveInstanceOfConstantLocalVerifyError.java
- * @compile -g:none PrimitiveInstanceOfConstantLocalVerifyError.java
- * @run main PrimitiveInstanceOfConstantLocalVerifyError
+ * @compile ConstantLocalPatternVerifyError.java
+ * @compile -g:none ConstantLocalPatternVerifyError.java
+ * @run main ConstantLocalPatternVerifyError
  */
 
-public class PrimitiveInstanceOfConstantLocalVerifyError {
+public class ConstantLocalPatternVerifyError {
     void run() {
-        final int x = 42;
-        if (!(x instanceof byte b) || b != 42) {
-            throw new AssertionError("primitive pattern failed");
-        }
-
         final String s = "hi";
         if (!(s instanceof CharSequence cs) || !cs.toString().equals("hi")) {
             throw new AssertionError("reference pattern failed");
@@ -44,6 +38,6 @@ public class PrimitiveInstanceOfConstantLocalVerifyError {
     }
 
     public static void main(String[] args) {
-        new PrimitiveInstanceOfConstantLocalVerifyError().run();
+        new ConstantLocalPatternVerifyError().run();
     }
 }
